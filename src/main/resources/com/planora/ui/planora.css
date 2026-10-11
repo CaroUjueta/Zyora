@@ -1,0 +1,178 @@
+/* Planora: light theme */
+
+.root {
+    -accent: #2564cf;
+    -danger: #c42b1c;
+    -text: #1f2937;
+    -muted: #6b7280;
+    -line: #e6e9ee;
+    -surface: #ffffff;
+    -surface-alt: #f6f7f9;
+    -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13px;
+    -fx-accent: -accent;
+    -fx-focus-color: -accent;
+    -fx-faint-focus-color: #2564cf22;
+    -fx-background-color: -surface;
+}
+
+.hint { -fx-text-fill: -muted; -fx-font-size: 11.5px; }
+.section-title { -fx-font-weight: bold; -fx-text-fill: -text; -fx-font-size: 13.5px; }
+.field-label { -fx-text-fill: -muted; -fx-font-size: 11.5px; }
+.error-label { -fx-text-fill: -danger; }
+
+.button.accent { -fx-background-color: -accent; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 14; }
+.button.accent:hover { -fx-background-color: derive(-accent, -12%); }
+.button.danger { -fx-text-fill: -danger; }
+.icon-button { -fx-background-color: transparent; -fx-padding: 2 6; -fx-text-fill: -muted; -fx-cursor: hand; }
+.icon-button:hover { -fx-background-color: #e9edf3; -fx-background-radius: 4; }
+
+/* ---- Sidebar ---- */
+
+.sidebar {
+    -fx-background-color: -surface-alt;
+    -fx-pref-width: 240;
+    -fx-min-width: 200;
+    -fx-padding: 18 10 12 10;
+    -fx-spacing: 12;
+    -fx-border-color: transparent -line transparent transparent;
+}
+.brand { -fx-font-size: 21px; -fx-font-weight: bold; -fx-text-fill: -accent; -fx-padding: 0 10 4 10; }
+.nav-list, .nav-list:focused { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.nav-list .list-cell { -fx-background-color: transparent; -fx-padding: 8 10; -fx-background-radius: 6; }
+.nav-list .list-cell:hover { -fx-background-color: #e8ecf2; }
+.nav-list .list-cell:selected { -fx-background-color: #dde7f7; }
+.nav-list .list-cell:group-start { -fx-border-color: -line transparent transparent transparent; -fx-border-width: 1 0 0 0; }
+.nav-icon { -fx-min-width: 18; -fx-text-fill: -accent; }
+.nav-name { -fx-text-fill: -text; }
+.nav-count { -fx-text-fill: -muted; -fx-font-size: 11.5px; }
+.new-list-field { -fx-background-color: transparent; -fx-text-fill: -accent; -fx-prompt-text-fill: -accent; }
+.new-list-field:focused { -fx-background-color: white; -fx-text-fill: -text; }
+
+/* ---- Task lists ---- */
+
+.task-pane { -fx-background-color: -surface; }
+.pane-header { -fx-padding: 26 28 14 28; }
+.pane-title { -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: -text; }
+.pane-subtitle { -fx-text-fill: -muted; }
+
+.add-task-field {
+    -fx-pref-height: 44;
+    -fx-background-color: -surface-alt;
+    -fx-background-radius: 8;
+    -fx-padding: 0 14;
+    -fx-prompt-text-fill: -accent;
+}
+.add-task-field:focused { -fx-background-color: white; -fx-border-color: -accent; -fx-border-radius: 8; }
+
+.task-list, .task-list:focused { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.task-list .list-cell { -fx-background-color: transparent; -fx-padding: 3 2; }
+.task-row {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.10), 4, 0, 0, 1);
+    -fx-cursor: hand;
+}
+.task-row:hover { -fx-background-color: #f4f7fc; }
+.task-title { -fx-text-fill: -text; }
+.task-title.done { -fx-text-fill: #9ca3af; }
+.task-title.done .text { -fx-strikethrough: true; }
+.task-meta { -fx-font-size: 11px; -fx-text-fill: -muted; }
+.task-meta:overdue { -fx-text-fill: -danger; }
+.star-button { -fx-background-color: transparent; -fx-text-fill: #9ca3af; -fx-font-size: 16px; -fx-padding: 0 4; -fx-cursor: hand; }
+.star-button:important { -fx-text-fill: -accent; }
+
+.done-pane > .title { -fx-background-color: transparent; -fx-padding: 6 4; }
+.done-pane > .content { -fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 4 0 0 0; }
+
+.agenda-panel {
+    -fx-pref-width: 270;
+    -fx-padding: 26 20;
+    -fx-background-color: -surface-alt;
+    -fx-border-color: transparent transparent transparent -line;
+}
+.agenda-bar { -fx-min-width: 4; -fx-pref-width: 4; -fx-max-width: 4; -fx-background-radius: 2; }
+.agenda-time { -fx-text-fill: -muted; -fx-font-size: 11px; }
+.agenda-title { -fx-text-fill: -text; }
+
+/* ---- Task details ---- */
+
+.detail-pane {
+    -fx-background-color: -surface-alt;
+    -fx-pref-width: 350;
+    -fx-min-width: 320;
+    -fx-padding: 16;
+    -fx-spacing: 10;
+    -fx-border-color: transparent transparent transparent -line;
+}
+.detail-scroll, .detail-scroll > .viewport { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.detail-card { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 3, 0, 0, 1); }
+.detail-title { -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-padding: 4 2; }
+.detail-title:focused { -fx-background-color: -surface-alt; }
+.star-toggle { -fx-background-color: transparent; -fx-text-fill: -accent; -fx-font-size: 17px; -fx-padding: 0 4; }
+
+/* ---- Calendar ---- */
+
+.calendar-pane { -fx-background-color: -surface; }
+.calendar-toolbar { -fx-padding: 14 20; -fx-border-color: transparent transparent -line transparent; }
+.range-label { -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -text; -fx-padding: 0 0 0 10; }
+.segmented .toggle-button { -fx-background-radius: 0; -fx-padding: 5 14; }
+.segmented .toggle-button.first { -fx-background-radius: 6 0 0 6; }
+.segmented .toggle-button.last { -fx-background-radius: 0 6 6 0; }
+.segmented .toggle-button:selected { -fx-background-color: -accent; -fx-text-fill: white; }
+
+.backlog-panel {
+    -fx-pref-width: 290;
+    -fx-min-width: 240;
+    -fx-padding: 16 14;
+    -fx-background-color: -surface-alt;
+    -fx-border-color: transparent transparent transparent -line;
+}
+
+.month-view { -fx-padding: 0 10 10 10; }
+.weekday-header { -fx-text-fill: -muted; -fx-font-size: 11.5px; -fx-padding: 8 6; }
+.month-cell { -fx-border-color: -line; -fx-border-width: 0.5; -fx-padding: 4; }
+.month-cell.other-month { -fx-background-color: #fafbfc; }
+.month-cell.other-month .day-number { -fx-text-fill: #b0b7c3; }
+.month-cell.drop-target { -fx-background-color: #e7effb; }
+.day-number { -fx-padding: 1 7; -fx-font-weight: bold; -fx-text-fill: -text; -fx-cursor: hand; -fx-background-radius: 11; }
+.month-cell.today .day-number { -fx-background-color: -accent; -fx-text-fill: white; }
+.more-label { -fx-text-fill: -muted; -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 0 4; }
+
+.cal-chip {
+    -fx-padding: 1 6;
+    -fx-background-radius: 4;
+    -fx-border-width: 0 0 0 3;
+    -fx-font-size: 11px;
+    -fx-text-fill: -text;
+    -fx-cursor: hand;
+}
+.cal-chip.completed, .cal-block.completed { -fx-opacity: 0.5; }
+
+.grid-header { -fx-border-color: transparent transparent -line transparent; }
+.grid-header-cell { -fx-alignment: center; -fx-padding: 8 0 6 0; -fx-cursor: hand; }
+.grid-header-cell .weekday { -fx-text-fill: -muted; -fx-font-size: 11px; }
+.grid-header-cell .daynum { -fx-font-size: 20px; -fx-text-fill: -text; }
+.grid-header-cell.today .daynum { -fx-text-fill: -accent; -fx-font-weight: bold; }
+.grid-header-cell.today .weekday { -fx-text-fill: -accent; }
+.all-day-row { -fx-border-color: transparent transparent -line transparent; -fx-min-height: 30; }
+.all-day-cell { -fx-padding: 3; -fx-border-color: transparent -line transparent transparent; }
+.hour-label { -fx-text-fill: #9ca3af; -fx-font-size: 10.5px; -fx-padding: 0 8 0 0; -fx-translate-y: -7; }
+.all-day-row > .hour-label { -fx-translate-y: 0; -fx-padding: 4 8 0 4; }
+
+.time-grid .scroll-pane, .time-grid .scroll-pane > .viewport { -fx-background-color: -surface; -fx-background-insets: 0; -fx-padding: 0; }
+.day-column { -fx-border-color: transparent -line transparent transparent; -fx-border-width: 0 1 0 0; }
+.day-column.today { -fx-background-color: #f7faff; }
+.hour-slot { -fx-border-color: -line transparent transparent transparent; -fx-border-width: 1 0 0 0; }
+.now-line { -fx-background-color: -danger; }
+
+.cal-block {
+    -fx-background-radius: 4;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 2 6;
+    -fx-cursor: hand;
+}
+.cal-block-title { -fx-font-weight: bold; -fx-font-size: 11.5px; -fx-text-fill: -text; }
+.cal-block-time { -fx-font-size: 10.5px; -fx-text-fill: #4b5563; }
+.task-block .check-box .box { -fx-padding: 2; }

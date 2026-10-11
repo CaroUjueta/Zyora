@@ -155,11 +155,18 @@ fun SectionLabel(icon: String, text: String) {
     }
 }
 
-/** The palette as round swatches; eight must fit the narrowest dialog, so they share the width. */
+/** The palette as round swatches, eight per row; they must fit the narrowest dialog, so they share the width. */
 @Composable
 fun ColorSwatches(selected: String?, onPick: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Planner.COLORS.chunked(8).forEach { row -> SwatchRow(row, selected, onPick) }
+    }
+}
+
+@Composable
+private fun SwatchRow(colors: List<String>, selected: String?, onPick: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
-        Planner.COLORS.forEach { c ->
+        colors.forEach { c ->
             val isSelected = c.equals(selected, ignoreCase = true)
             Box(
                 Modifier

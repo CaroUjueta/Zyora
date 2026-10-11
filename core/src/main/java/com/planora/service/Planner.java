@@ -29,9 +29,15 @@ import java.util.function.Predicate;
  * <p>UI code may edit a task or event in place and then call {@link #changed()}.
  */
 public class Planner {
-    /** Pastel colors for new lists and events: lavender, pink, mint, peach, sky, butter, coral, aqua. */
+    /**
+     * Pastel colors for lists and events, shown in pickers as two rows of eight. Views only keep
+     * the hue (see Palette), so every color has a hue of its own. First row: lavender, pink, mint,
+     * peach, sky, butter, coral, aqua. Second row: jade, pistachio, lime, sage, periwinkle,
+     * orchid, mauve and pearl grey.
+     */
     public static final List<String> COLORS = List.of(
-            "#a78bdb", "#f19cbb", "#7cc7a3", "#f5b087", "#82b4e8", "#e8c55c", "#ee8f8f", "#6fc3c9");
+            "#a78bdb", "#f19cbb", "#7cc7a3", "#f5b087", "#82b4e8", "#e8c55c", "#ee8f8f", "#6fc3c9",
+            "#82e0cc", "#c8e082", "#9ae082", "#82e092", "#8285e0", "#d082e0", "#e082cd", "#b9b4c2");
 
     private static final Comparator<Task> TASK_ORDER = Comparator
             .comparing(Task::isCompleted)

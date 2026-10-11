@@ -102,16 +102,21 @@ final class Dialogs {
     }
 
     /**
-     * One round swatch per palette color, plus {@code current} if it is not in the palette. The
-     * selected swatch's user data is its color.
+     * One round swatch per palette color, eight per row, plus {@code current} if it is not in the
+     * palette. The selected swatch's user data is its color.
      */
-    static HBox swatches(ToggleGroup group, String current) {
+    static VBox swatches(ToggleGroup group, String current) {
         List<String> options = new ArrayList<>(Planner.COLORS);
         if (current != null && options.stream().noneMatch(c -> c.equalsIgnoreCase(current))) {
             options.add(0, current);
         }
-        HBox row = new HBox(6);
+        VBox rows = new VBox(8);
+        HBox row = null;
         for (String c : options) {
+            if (row == null || row.getChildren().size() == 8) {
+                row = new HBox(6);
+                rows.getChildren().add(row);
+            }
             ToggleButton swatch = new ToggleButton();
             swatch.getStyleClass().add("swatch");
             swatch.setStyle("-fx-background-color: " + Palette.bar(c) + ";");
@@ -130,7 +135,7 @@ final class Dialogs {
                 old.setSelected(true);
             }
         });
-        return row;
+        return rows;
     }
 
     static void info(Window owner, String header, String text) {

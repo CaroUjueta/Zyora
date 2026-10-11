@@ -2,6 +2,7 @@ package com.planora.android
 
 import android.app.Application
 import androidx.glance.appwidget.updateAll
+import com.planora.android.sync.PhoneSync
 import com.planora.android.widget.MonthWidget
 import com.planora.service.JsonPlannerStore
 import com.planora.service.Planner
@@ -27,6 +28,10 @@ class PlanoraApplication : Application() {
 
     private val scope = MainScope()
 
+    /** Sync with the computer over Wi‑Fi. */
+    lateinit var sync: PhoneSync
+        private set
+
     override fun onCreate() {
         super.onCreate()
         Locale.setDefault(Locale.forLanguageTag("es"))
@@ -35,5 +40,6 @@ class PlanoraApplication : Application() {
             changes.value++
             scope.launch { MonthWidget().updateAll(this@PlanoraApplication) }
         }
+        sync = PhoneSync(this, planner, scope)
     }
 }

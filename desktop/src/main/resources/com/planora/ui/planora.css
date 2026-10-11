@@ -210,6 +210,23 @@
 }
 .new-list-field, .new-list-field:focused { -fx-background-radius: 10; -fx-padding: 9 12; }
 .new-list-field { -fx-background-color: transparent; -fx-prompt-text-fill: -accent; }
+.sync-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -line-strong;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: -accent-ink;
+    -fx-padding: 8 12;
+    -fx-cursor: hand;
+}
+.sync-button:hover { -fx-background-color: -accent-soft; }
+.sync-hint { -fx-text-fill: -muted; -fx-font-size: 11px; -fx-padding: 0 4; }
+
+/* Sync window */
+.sync-grid { -fx-hgap: 18; -fx-vgap: 10; -fx-padding: 12 16; -fx-background-color: -chip; -fx-background-radius: 14; }
+.sync-field { -fx-text-fill: -muted; }
+.sync-value { -fx-text-fill: -accent-ink; -fx-font-size: 20px; -fx-font-weight: bold; }
+.sync-status { -fx-text-fill: derive(-text, 20%); -fx-font-weight: bold; }
 
 /* ---- Task lists ---- */
 

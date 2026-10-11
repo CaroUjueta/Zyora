@@ -2,6 +2,7 @@ package com.planora;
 
 import com.planora.service.JsonPlannerStore;
 import com.planora.service.Planner;
+import com.planora.sync.SyncServer;
 import com.planora.ui.MainWindow;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 public class PlanoraApp extends Application {
+    private SyncServer sync;
 
     /** Data lives in ~/.planora/planora.json unless -Dplanora.data=<file> says otherwise. */
     static Path dataFile() {
@@ -41,7 +43,10 @@ public class PlanoraApp extends Application {
             return;
         }
 
-        Scene scene = new Scene(new MainWindow(planner), 1280, 800);
+        sync = new SyncServer(planner, store.file());
+        sync.start();
+
+        Scene scene = new Scene(new MainWindow(planner, sync), 1280, 800);
         scene.getStylesheets().add(
                 PlanoraApp.class.getResource("/com/planora/ui/planora.css").toExternalForm());
         stage.setTitle("Planora");
@@ -49,6 +54,13 @@ public class PlanoraApp extends Application {
         stage.setMinHeight(600);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        if (sync != null) {
+            sync.stop();
+        }
     }
 
     public static void main(String[] args) {

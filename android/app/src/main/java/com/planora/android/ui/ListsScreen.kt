@@ -105,6 +105,10 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
             Text("Mantén presionada una lista para crear sublistas, renombrarla o eliminarla.",
                 color = Pastel.Faint, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 14.dp))
         }
+        item {
+            HorizontalDivider(color = Pastel.Line, modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp))
+            SyncRow()
+        }
     }
 
     if (creatingRoot) {

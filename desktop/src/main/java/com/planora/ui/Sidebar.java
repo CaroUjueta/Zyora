@@ -4,9 +4,11 @@ import com.planora.model.Task;
 import com.planora.model.TaskList;
 import com.planora.service.Planner;
 import com.planora.service.SmartList;
+import com.planora.sync.SyncServer;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -32,7 +34,7 @@ class Sidebar extends VBox {
     private final Set<String> collapsed = new HashSet<>();
     private boolean refreshing;
 
-    Sidebar(Planner planner, Consumer<Nav> onNavigate) {
+    Sidebar(Planner planner, SyncServer sync, Consumer<Nav> onNavigate) {
         this.planner = planner;
         getStyleClass().add("sidebar");
 
@@ -60,7 +62,22 @@ class Sidebar extends VBox {
             }
         });
 
-        getChildren().addAll(brand, navList, newList);
+        Button syncButton = new Button("⇅  Sincronizar con el teléfono");
+        syncButton.getStyleClass().add("sync-button");
+        syncButton.setMaxWidth(Double.MAX_VALUE);
+        syncButton.setOnAction(e -> SyncDialog.show(getScene().getWindow(), sync));
+        Label syncStatus = new Label();
+        syncStatus.getStyleClass().add("sync-hint");
+        syncStatus.setWrapText(true);
+        syncStatus.setManaged(false);
+        syncStatus.setVisible(false);
+        sync.addListener(result -> {
+            syncStatus.setText(SyncDialog.statusText(result));
+            syncStatus.setManaged(true);
+            syncStatus.setVisible(true);
+        });
+
+        getChildren().addAll(brand, navList, newList, syncButton, syncStatus);
         planner.addListener(this::refresh);
         refresh();
     }

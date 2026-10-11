@@ -60,8 +60,27 @@ Gradle `android/core` compila directamente los archivos de `core/`.
 - Widget: mantén presionada la pantalla de inicio → Widgets → Planora · Mes. Las flechas cambian
   de mes y al tocar un día se abre la app en ese día.
 
-Por ahora el teléfono guarda sus datos aparte (en el almacenamiento de la app); la sincronización
-con el escritorio llegará con Supabase.
+## Sincronizar el teléfono y el PC
+
+Por Wi‑Fi, sin cuentas ni servicios externos. Los dos aparatos deben estar en la misma red.
+
+1. En el PC abre Planora y pulsa **⇅ Sincronizar con el teléfono** (abajo en la barra lateral).
+   Aparecen la dirección del PC y un código de 6 dígitos.
+2. En el teléfono ve a **Listas → Sincronizar con el PC**, escribe esa dirección y el código y
+   pulsa **Sincronizar ahora**.
+
+Desde entonces el teléfono se sincroniza solo cada vez que abres la app y al salir de ella si
+cambiaste algo; también puedes pulsar «Sincronizar ahora» cuando quieras. Los cambios van en los
+dos sentidos: gana la edición más reciente de cada tarea, lista o evento, y lo que borras en un
+lado se borra en el otro. Las listas con el mismo nombre (como «Tareas») se juntan en una sola.
+
+- Planora tiene que estar abierta en el PC (escucha en el puerto 47821). La primera vez Windows
+  puede preguntar si permite el acceso a la red: acepta para **redes privadas**.
+- Ejecuta la app de escritorio en Windows (`java -jar ...-all.jar`), no dentro de WSL: desde WSL
+  la dirección que se muestra es interna y el teléfono no llega a ella.
+- El código se guarda en `~/.planora/sync.properties`; bórralo para generar uno nuevo.
+- Usa la hora de cada aparato para decidir qué cambio es más reciente, así que conviene que ambos
+  tengan la hora automática.
 
 ## Datos
 
@@ -76,17 +95,19 @@ core/        modelo y lógica, sin interfaz (Java 17, para poder usarlo también
 └── src/main/java/com/planora/
     ├── model/     Task, Step, TaskList, CalendarEvent, Syncable, Tombstone
     └── service/   Planner (lógica y notificación de cambios), JsonPlannerStore (persistencia),
-                   ChangeTracker (fecha de última modificación), SmartList, AgendaItem
+                   ChangeTracker (fecha de última modificación), SyncMerger (mezcla los datos de
+                   dos aparatos), SyncProtocol, SmartList, AgendaItem
 desktop/     la app de escritorio (JavaFX)
 └── src/main/java/com/planora/
     ├── PlanoraApp.java / Launcher.java   arranque de la app
+    ├── sync/      SyncServer: recibe al teléfono por Wi‑Fi
     └── ui/        ventana principal, barra lateral, listas de tareas, detalle de tarea,
                    calendario (MonthView, TimeGridView, DayColumn) y ventanas flotantes
 ```
 
-Preparado para sincronizar: cada tarea, lista y evento guarda cuándo cambió por última vez
-(`updatedAt`) y los borrados quedan registrados (`deleted` en el JSON), para que otro dispositivo
-pueda aplicar los mismos cambios.
+Para sincronizar, cada tarea, lista y evento guarda cuándo cambió por última vez (`updatedAt`) y
+los borrados quedan registrados (`deleted` en el JSON), así el otro aparato puede aplicar los
+mismos cambios.
 
 ## Ideas para seguir
 

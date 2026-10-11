@@ -1,6 +1,7 @@
 package com.planora.service;
 
 import com.planora.model.CalendarEvent;
+import com.planora.model.Syncable;
 import com.planora.model.Task;
 import com.planora.model.TaskList;
 import com.planora.model.Tombstone;
@@ -12,8 +13,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -278,6 +281,48 @@ public class Planner {
         data.getEvents().remove(event);
         bury(Tombstone.Kind.EVENT, event.getId());
         changed();
+    }
+
+    // ---- sync ----------------------------------------------------------------------------
+
+    /** A copy of all the data, to send to another device. */
+    public PlannerData snapshot() {
+        return PlannerJson.copy(data, PlannerData.class);
+    }
+
+    /**
+     * Replaces all the data with {@code incoming} (usually a {@link SyncMerger} result), saves and
+     * notifies listeners. Tasks, lists and events that are still there keep their Java object, so
+     * a screen that is showing one keeps working.
+     */
+    public void replaceWith(PlannerData incoming) {
+        incoming = PlannerJson.copy(incoming, PlannerData.class);
+        data.setLists(adopt(data.getLists(), incoming.getLists()));
+        data.setTasks(adopt(data.getTasks(), incoming.getTasks()));
+        data.setEvents(adopt(data.getEvents(), incoming.getEvents()));
+        data.setDeleted(incoming.getDeleted());
+        Instant now = Instant.now(clock);
+        tracker.reset(data, now);
+        if (data.getLists().isEmpty()) {
+            data.getLists().add(new TaskList("Tareas", COLORS.get(0)));
+        }
+        changed();
+    }
+
+    private static <T extends Syncable> List<T> adopt(List<T> current, List<T> incoming) {
+        Map<String, T> byId = new HashMap<>();
+        current.forEach(item -> byId.put(item.getId(), item));
+        List<T> out = new ArrayList<>();
+        for (T item : incoming) {
+            T existing = byId.get(item.getId());
+            if (existing != null && existing.getClass() == item.getClass()) {
+                PlannerJson.copyInto(existing, item);
+                out.add(existing);
+            } else {
+                out.add(item);
+            }
+        }
+        return out;
     }
 
     // ---- change notification -------------------------------------------------------------

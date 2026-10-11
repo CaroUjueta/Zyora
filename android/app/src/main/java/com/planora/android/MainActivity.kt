@@ -66,6 +66,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (application as PlanoraApplication).sync.syncNow()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (application as PlanoraApplication).sync.syncIfChanged()
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         openDay.value = dayFrom(intent)

@@ -155,6 +155,11 @@ class Sidebar extends VBox {
                 .ifPresent(name -> planner.renameList(list, name));
     }
 
+    private void recolor(TaskList list) {
+        Dialogs.pickColor(getScene().getWindow(), "Color de «" + list.getName() + "»", list.getColor())
+                .ifPresent(color -> planner.setListColor(list, color));
+    }
+
     private void delete(TaskList list) {
         List<TaskList> doomed = planner.subtree(list);
         if (doomed.size() >= planner.lists().size()) {
@@ -228,9 +233,11 @@ class Sidebar extends VBox {
                 subItem.setOnAction(e -> addSublist(nav.list()));
                 MenuItem renameItem = new MenuItem("Renombrar");
                 renameItem.setOnAction(e -> rename(nav.list()));
+                MenuItem colorItem = new MenuItem("Cambiar color");
+                colorItem.setOnAction(e -> recolor(nav.list()));
                 MenuItem deleteItem = new MenuItem("Eliminar lista");
                 deleteItem.setOnAction(e -> delete(nav.list()));
-                setContextMenu(new ContextMenu(subItem, renameItem, deleteItem));
+                setContextMenu(new ContextMenu(subItem, renameItem, colorItem, deleteItem));
             } else {
                 setContextMenu(null);
             }

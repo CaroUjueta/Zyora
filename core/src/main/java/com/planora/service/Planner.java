@@ -250,6 +250,11 @@ public class Planner {
         changed();
     }
 
+    public void setListColor(TaskList list, String color) {
+        list.setColor(color);
+        changed();
+    }
+
     /**
      * Deletes a list together with its sublists and all their tasks. At least one list must remain,
      * so a list that holds every other one cannot be deleted.

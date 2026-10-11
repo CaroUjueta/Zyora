@@ -301,6 +301,17 @@ class PlannerTest {
         }
     }
 
+    @Test
+    void listColorCanBeChanged() {
+        TaskList list = planner.addList("Casa");
+        int saves = store.saves;
+
+        planner.setListColor(list, "#7cc7a3");
+
+        assertEquals("#7cc7a3", list.getColor());
+        assertEquals(saves + 1, store.saves);
+    }
+
     private static final class InMemoryStore implements PlannerStore {
         final PlannerData initial = new PlannerData();
         PlannerData last;

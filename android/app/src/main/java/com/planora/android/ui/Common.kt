@@ -1,6 +1,8 @@
 package com.planora.android.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.planora.service.Planner
 
 /**
  * Tasks, lists and events are plain Java objects edited in place, so Compose cannot see when they
@@ -150,4 +153,39 @@ fun SectionLabel(icon: String, text: String) {
         Spacer(Modifier.size(6.dp))
         Text(text, color = Pastel.Muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+/** The palette as round swatches; eight must fit the narrowest dialog, so they share the width. */
+@Composable
+fun ColorSwatches(selected: String?, onPick: (String) -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
+        Planner.COLORS.forEach { c ->
+            val isSelected = c.equals(selected, ignoreCase = true)
+            Box(
+                Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .clip(CircleShape)
+                    .background(Pastel.bar(c))
+                    .border(2.dp, if (isSelected) Pastel.Text else Color.Transparent, CircleShape)
+                    .clickable { onPick(c) },
+                contentAlignment = Alignment.Center,
+            ) { if (isSelected) Text("✓", color = Color.White, fontWeight = FontWeight.Bold) }
+        }
+    }
+}
+
+/** Asks for one of the palette colors. */
+@Composable
+fun ColorDialog(title: String, initial: String?, onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
+    var color by remember { mutableStateOf(initial ?: Planner.COLORS[0]) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        shape = RoundedCornerShape(22.dp),
+        title = { Text(title, fontWeight = FontWeight.Bold) },
+        text = { ColorSwatches(color) { color = it } },
+        confirmButton = { TextButton(onClick = { onConfirm(color) }) { Text("Guardar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } },
+    )
 }

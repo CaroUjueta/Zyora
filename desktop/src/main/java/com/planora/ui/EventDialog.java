@@ -1,7 +1,6 @@
 package com.planora.ui;
 
 import com.planora.model.CalendarEvent;
-import com.planora.service.Planner;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
@@ -13,7 +12,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,8 +20,6 @@ import javafx.stage.Window;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Creates or edits an event. The event is only modified when the user saves. */
 class EventDialog extends Dialog<EventDialog.Action> {
@@ -98,7 +94,7 @@ class EventDialog extends Dialog<EventDialog.Action> {
         form.addRow(1, new Label("Inicio"), new HBox(6, startDate, startTime));
         form.addRow(2, new Label("Fin"), new HBox(6, endDate, endTime));
         form.addRow(3, new Label(""), allDay);
-        form.addRow(4, new Label("Color"), swatches(event.getColor()));
+        form.addRow(4, new Label("Color"), Dialogs.swatches(color, event.getColor()));
         form.addRow(5, new Label("Ubicación"), location);
         form.addRow(6, new Label("Notas"), notes);
         form.add(error, 1, 7);
@@ -164,31 +160,5 @@ class EventDialog extends Dialog<EventDialog.Action> {
         box.setVisibleRowCount(10);
         box.setPrefWidth(100);
         return box;
-    }
-
-    /** One round swatch per palette color, plus the event's own color if it is not in the palette. */
-    private HBox swatches(String current) {
-        List<String> options = new ArrayList<>(Planner.COLORS);
-        if (options.stream().noneMatch(c -> c.equalsIgnoreCase(current))) {
-            options.add(0, current);
-        }
-        HBox row = new HBox(6);
-        for (String c : options) {
-            ToggleButton swatch = new ToggleButton();
-            swatch.getStyleClass().add("swatch");
-            swatch.setStyle("-fx-background-color: " + Palette.bar(c) + ";");
-            swatch.textProperty().bind(swatch.selectedProperty().map(selected -> selected ? "✓" : ""));
-            swatch.setUserData(c);
-            swatch.setToggleGroup(color);
-            swatch.setSelected(c.equalsIgnoreCase(current));
-            row.getChildren().add(swatch);
-        }
-        // Clicking the selected swatch again must not leave the event without a color.
-        color.selectedToggleProperty().addListener((obs, old, now) -> {
-            if (now == null && old != null) {
-                old.setSelected(true);
-            }
-        });
-        return row;
     }
 }

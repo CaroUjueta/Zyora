@@ -7,7 +7,8 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
 ## Funciones
 
 **Tareas**
-- Listas propias con color (crear, renombrar, eliminar con clic derecho).
+- Listas propias con color (crear; renombrar, cambiar el color o eliminar con clic derecho, o
+  manteniendo presionada la lista en el teléfono).
 - **Sublistas**: clic derecho → «Nueva sublista». Una lista muestra también las tareas de sus
   sublistas, y en la barra lateral se pueden plegar con ▾.
 - Listas inteligentes: **Mi día**, **Importante**, **Planeado** y **Todas las tareas**.

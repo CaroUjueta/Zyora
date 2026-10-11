@@ -1,5 +1,6 @@
 package com.planora.ui;
 
+import com.planora.service.Planner;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonBase;
@@ -10,11 +11,16 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -79,6 +85,52 @@ final class Dialogs {
             field.selectAll();
         });
         return dialog.showAndWait().filter(s -> !s.isEmpty());
+    }
+
+    /** Asks for one of the palette colors; empty when cancelled. */
+    static Optional<String> pickColor(Window owner, String header, String current) {
+        Dialog<String> dialog = decorate(new Dialog<>(), owner);
+        dialog.setHeaderText(header);
+        ButtonType ok = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ok);
+        ToggleGroup group = new ToggleGroup();
+        VBox content = new VBox(swatches(group, current));
+        content.getStyleClass().add("dialog-body");
+        dialog.getDialogPane().setContent(content);
+        dialog.setResultConverter(button -> button == ok ? (String) group.getSelectedToggle().getUserData() : null);
+        return dialog.showAndWait();
+    }
+
+    /**
+     * One round swatch per palette color, plus {@code current} if it is not in the palette. The
+     * selected swatch's user data is its color.
+     */
+    static HBox swatches(ToggleGroup group, String current) {
+        List<String> options = new ArrayList<>(Planner.COLORS);
+        if (current != null && options.stream().noneMatch(c -> c.equalsIgnoreCase(current))) {
+            options.add(0, current);
+        }
+        HBox row = new HBox(6);
+        for (String c : options) {
+            ToggleButton swatch = new ToggleButton();
+            swatch.getStyleClass().add("swatch");
+            swatch.setStyle("-fx-background-color: " + Palette.bar(c) + ";");
+            swatch.textProperty().bind(swatch.selectedProperty().map(selected -> selected ? "✓" : ""));
+            swatch.setUserData(c);
+            swatch.setToggleGroup(group);
+            swatch.setSelected(c.equalsIgnoreCase(current));
+            row.getChildren().add(swatch);
+        }
+        if (group.getSelectedToggle() == null) {
+            group.selectToggle(group.getToggles().get(0));
+        }
+        // Clicking the selected swatch again must not leave it without a color.
+        group.selectedToggleProperty().addListener((obs, old, now) -> {
+            if (now == null && old != null) {
+                old.setSelected(true);
+            }
+        });
+        return row;
     }
 
     static void info(Window owner, String header, String text) {

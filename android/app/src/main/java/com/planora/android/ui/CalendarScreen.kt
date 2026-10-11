@@ -240,21 +240,7 @@ private fun EventDialog(event: CalendarEvent, isNew: Boolean, onSave: () -> Unit
                         Pill(Fmt.TIME.format(end), true) { picking = "end" }
                     }
                 }
-                // Eight swatches must fit the narrowest dialog, so they share the width.
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
-                    Planner.COLORS.forEach { c ->
-                        Box(
-                            Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clip(CircleShape)
-                                .background(Pastel.bar(c))
-                                .border(2.dp, if (c.equals(color, ignoreCase = true)) Pastel.Text else Color.Transparent, CircleShape)
-                                .clickable { color = c },
-                            contentAlignment = Alignment.Center,
-                        ) { if (c.equals(color, ignoreCase = true)) Text("✓", color = Color.White, fontWeight = FontWeight.Bold) }
-                    }
-                }
+                ColorSwatches(color) { color = it }
                 OutlinedTextField(location, { location = it }, placeholder = { Text("Ubicación") }, singleLine = true,
                     shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth())
             }

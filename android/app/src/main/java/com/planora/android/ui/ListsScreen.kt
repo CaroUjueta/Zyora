@@ -57,6 +57,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
     var newList by remember { mutableStateOf<TaskList?>(null) }
     var creatingRoot by remember { mutableStateOf(false) }
     var renaming by remember { mutableStateOf<TaskList?>(null) }
+    var recoloring by remember { mutableStateOf<TaskList?>(null) }
     var deleting by remember { mutableStateOf<TaskList?>(null) }
     val visible = planner.listTree().filter { list ->
         planner.pathOf(list).dropLast(1).none { it.id in collapsed }
@@ -91,6 +92,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }, containerColor = Color.White) {
                     DropdownMenuItem(text = { Text("Nueva sublista") }, onClick = { menu = false; newList = list })
                     DropdownMenuItem(text = { Text("Renombrar") }, onClick = { menu = false; renaming = list })
+                    DropdownMenuItem(text = { Text("Cambiar color") }, onClick = { menu = false; recoloring = list })
                     DropdownMenuItem(text = { Text("Eliminar lista", color = Pastel.Danger) }, onClick = { menu = false; deleting = list })
                 }
             }
@@ -102,7 +104,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
                     .clip(RoundedCornerShape(12.dp))
                     .clickable { creatingRoot = true }
                     .padding(14.dp))
-            Text("Mantén presionada una lista para crear sublistas, renombrarla o eliminarla.",
+            Text("Mantén presionada una lista para crear sublistas, renombrarla, cambiar su color o eliminarla.",
                 color = Pastel.Faint, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 14.dp))
         }
         item {
@@ -126,6 +128,10 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
     renaming?.let { list ->
         NameDialog("Renombrar lista", list.name, "Guardar",
             onConfirm = { planner.renameList(list, it); renaming = null }, onDismiss = { renaming = null })
+    }
+    recoloring?.let { list ->
+        ColorDialog("Color de «${list.name}»", list.color,
+            onConfirm = { planner.setListColor(list, it); recoloring = null }, onDismiss = { recoloring = null })
     }
     deleting?.let { list ->
         val doomed = planner.subtree(list)

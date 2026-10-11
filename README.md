@@ -8,6 +8,8 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
 
 **Tareas**
 - Listas propias con color (crear, renombrar, eliminar con clic derecho).
+- **Sublistas**: clic derecho → «Nueva sublista». Una lista muestra también las tareas de sus
+  sublistas, y en la barra lateral se pueden plegar con ▾.
 - Listas inteligentes: **Mi día**, **Importante**, **Planeado** y **Todas las tareas**.
 - Pasos (subtareas), notas, fecha de vencimiento, marcar como importante y completadas.
 
@@ -42,10 +44,24 @@ Crear un `.jar` ejecutable (funciona en el sistema operativo donde se compila):
 
 ```bash
 ./mvnw package
-java -jar target/planora-0.1.0-SNAPSHOT-all.jar
+java -jar desktop/target/planora-0.1.0-SNAPSHOT-all.jar
 ```
 
 Pruebas: `./mvnw test`
+
+## App de Android
+
+En `android/` está la app para el teléfono (Kotlin + Jetpack Compose) con un **widget de mes**
+para la pantalla de inicio. Usa el mismo modelo y la misma lógica que el escritorio: el módulo
+Gradle `android/core` compila directamente los archivos de `core/`.
+
+- Abre la carpeta `android/` en Android Studio y ejecuta la configuración `app`.
+- O desde la terminal: `cd android && ./gradlew :app:installDebug` (con un teléfono o emulador conectado).
+- Widget: mantén presionada la pantalla de inicio → Widgets → Planora · Mes. Las flechas cambian
+  de mes y al tocar un día se abre la app en ese día.
+
+Por ahora el teléfono guarda sus datos aparte (en el almacenamiento de la app); la sincronización
+con el escritorio llegará con Supabase.
 
 ## Datos
 
@@ -56,14 +72,21 @@ Todo se guarda automáticamente en `~/.planora/planora.json` (en Windows,
 ## Estructura
 
 ```
-src/main/java/com/planora/
-├── PlanoraApp.java / Launcher.java   arranque de la app
-├── model/     Task, Step, TaskList, CalendarEvent
-├── service/   Planner (lógica y notificación de cambios), JsonPlannerStore (persistencia),
-│              SmartList, AgendaItem
-└── ui/        ventana principal, barra lateral, listas de tareas, detalle de tarea,
-               calendario (MonthView, TimeGridView, DayColumn) y diálogo de eventos
+core/        modelo y lógica, sin interfaz (Java 17, para poder usarlo también en Android)
+└── src/main/java/com/planora/
+    ├── model/     Task, Step, TaskList, CalendarEvent, Syncable, Tombstone
+    └── service/   Planner (lógica y notificación de cambios), JsonPlannerStore (persistencia),
+                   ChangeTracker (fecha de última modificación), SmartList, AgendaItem
+desktop/     la app de escritorio (JavaFX)
+└── src/main/java/com/planora/
+    ├── PlanoraApp.java / Launcher.java   arranque de la app
+    └── ui/        ventana principal, barra lateral, listas de tareas, detalle de tarea,
+                   calendario (MonthView, TimeGridView, DayColumn) y ventanas flotantes
 ```
+
+Preparado para sincronizar: cada tarea, lista y evento guarda cuándo cambió por última vez
+(`updatedAt`) y los borrados quedan registrados (`deleted` en el JSON), para que otro dispositivo
+pueda aplicar los mismos cambios.
 
 ## Ideas para seguir
 

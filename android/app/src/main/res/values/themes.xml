@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Planora" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+    <color name="surface">#FFFFFDFB</color>
+    <color name="icon_background">#FFF3EEFB</color>
+</resources>

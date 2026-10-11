@@ -1,0 +1,223 @@
+package com.planora.ui;
+
+import com.planora.model.Task;
+import com.planora.model.TaskList;
+import com.planora.service.Planner;
+import com.planora.service.SmartList;
+import javafx.css.PseudoClass;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+class Sidebar extends VBox {
+    private static final PseudoClass GROUP_START = PseudoClass.getPseudoClass("group-start");
+
+    private final Planner planner;
+    private final ListView<Nav> navList = new ListView<>();
+    /** Ids of the lists whose sublists are hidden. Only remembered while the app is open. */
+    private final Set<String> collapsed = new HashSet<>();
+    private boolean refreshing;
+
+    Sidebar(Planner planner, Consumer<Nav> onNavigate) {
+        this.planner = planner;
+        getStyleClass().add("sidebar");
+
+        Label brand = new Label("✿ Planora");
+        brand.getStyleClass().add("brand");
+
+        navList.getStyleClass().add("nav-list");
+        navList.setCellFactory(v -> new NavCell());
+        navList.getSelectionModel().selectedItemProperty().addListener((obs, old, nav) -> {
+            if (nav != null && !refreshing) {
+                onNavigate.accept(nav);
+            }
+        });
+        VBox.setVgrow(navList, Priority.ALWAYS);
+
+        TextField newList = new TextField();
+        newList.setPromptText("+ Nueva lista");
+        newList.getStyleClass().add("new-list-field");
+        newList.setOnAction(e -> {
+            String name = newList.getText().strip();
+            if (!name.isEmpty()) {
+                newList.clear();
+                TaskList list = planner.addList(name);
+                navList.getSelectionModel().select(Nav.list(list));
+            }
+        });
+
+        getChildren().addAll(brand, navList, newList);
+        planner.addListener(this::refresh);
+        refresh();
+    }
+
+    private void refresh() {
+        Nav selected = navList.getSelectionModel().getSelectedItem();
+        List<Nav> items = new ArrayList<>();
+        items.add(Nav.calendar());
+        for (SmartList smart : SmartList.values()) {
+            items.add(Nav.smart(smart));
+        }
+        for (TaskList list : planner.listTree()) {
+            if (!insideCollapsed(list)) {
+                items.add(Nav.list(list));
+            }
+        }
+
+        refreshing = true;
+        navList.getItems().setAll(items);
+        navList.refresh();
+        boolean keep = selected != null && items.contains(selected);
+        if (keep) {
+            navList.getSelectionModel().select(selected);
+        }
+        refreshing = false;
+        if (!keep) {
+            navList.getSelectionModel().select(Nav.smart(SmartList.MY_DAY));
+        }
+    }
+
+    private long pendingCount(Nav nav) {
+        List<Task> tasks = switch (nav.kind()) {
+            case CALENDAR -> List.of();
+            case SMART -> planner.tasksFor(nav.smart());
+            case LIST -> planner.tasksInList(nav.list());
+        };
+        return tasks.stream().filter(t -> !t.isCompleted()).count();
+    }
+
+    /** How many lists this one is nested in; 0 for top-level lists. */
+    private int depth(TaskList list) {
+        return planner.pathOf(list).size() - 1;
+    }
+
+    private boolean insideCollapsed(TaskList list) {
+        List<TaskList> ancestors = planner.pathOf(list).subList(0, depth(list));
+        return ancestors.stream().anyMatch(l -> collapsed.contains(l.getId()));
+    }
+
+    private void toggle(TaskList list) {
+        if (!collapsed.remove(list.getId())) {
+            collapsed.add(list.getId());
+        }
+        // If the open list is about to be hidden, move the selection up to the collapsed list.
+        Nav selected = navList.getSelectionModel().getSelectedItem();
+        boolean hidesSelection = selected != null && selected.kind() == Nav.Kind.LIST
+                && selected.list() != list && planner.subtree(list).contains(selected.list());
+        refresh();
+        if (hidesSelection) {
+            navList.getSelectionModel().select(Nav.list(list));
+        }
+    }
+
+    private void addSublist(TaskList parent) {
+        Dialogs.prompt(getScene().getWindow(), "Nueva sublista en «" + parent.getName() + "»", "",
+                "Nombre de la sublista", "Crear").ifPresent(name -> {
+                    collapsed.remove(parent.getId());
+                    TaskList list = planner.addList(name, parent);
+                    navList.getSelectionModel().select(Nav.list(list));
+                });
+    }
+
+    private void rename(TaskList list) {
+        Dialogs.prompt(getScene().getWindow(), "Renombrar lista", list.getName(), "Nombre", "Guardar")
+                .ifPresent(name -> planner.renameList(list, name));
+    }
+
+    private void delete(TaskList list) {
+        List<TaskList> doomed = planner.subtree(list);
+        if (doomed.size() >= planner.lists().size()) {
+            Dialogs.info(getScene().getWindow(), "No se puede eliminar",
+                    "Debe existir al menos una lista fuera de «" + list.getName() + "».");
+            return;
+        }
+        int tasks = planner.tasksInList(list).size();
+        int sublists = doomed.size() - 1;
+        String text = "Se eliminarán " + (tasks == 1 ? "1 tarea" : tasks + " tareas")
+                + (sublists == 0 ? "" : sublists == 1 ? " y 1 sublista" : " y " + sublists + " sublistas")
+                + ". Esta acción no se puede deshacer.";
+        if (Dialogs.confirm(getScene().getWindow(), "¿Eliminar «" + list.getName() + "»?", text, "Eliminar")) {
+            planner.deleteList(list);
+        }
+    }
+
+    private class NavCell extends ListCell<Nav> {
+        private final Label arrow = new Label();
+        private final Label icon = new Label();
+        private final Label name = new Label();
+        private final Label count = new Label();
+        private final HBox root = new HBox(8, arrow, icon, name, count);
+
+        NavCell() {
+            arrow.getStyleClass().add("nav-arrow-toggle");
+            arrow.setOnMouseClicked(e -> {
+                if (getItem() != null && getItem().kind() == Nav.Kind.LIST
+                        && !planner.childrenOf(getItem().list()).isEmpty()) {
+                    toggle(getItem().list());
+                    e.consume();
+                }
+            });
+            icon.getStyleClass().add("nav-icon");
+            name.getStyleClass().add("nav-name");
+            count.getStyleClass().add("nav-count");
+            name.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(name, Priority.ALWAYS);
+            root.setAlignment(Pos.CENTER_LEFT);
+        }
+
+        @Override
+        protected void updateItem(Nav nav, boolean empty) {
+            super.updateItem(nav, empty);
+            if (empty || nav == null) {
+                setGraphic(null);
+                setContextMenu(null);
+                pseudoClassStateChanged(GROUP_START, false);
+                return;
+            }
+            boolean isList = nav.kind() == Nav.Kind.LIST;
+            boolean hasChildren = isList && !planner.childrenOf(nav.list()).isEmpty();
+            arrow.setText(hasChildren ? (collapsed.contains(nav.list().getId()) ? "▸" : "▾") : "");
+            arrow.setVisible(isList);
+            arrow.setManaged(isList);
+            root.setPadding(new Insets(0, 0, 0, isList ? depth(nav.list()) * 16 : 0));
+            icon.setText(nav.icon());
+            icon.setStyle(nav.kind() == Nav.Kind.LIST ? "-fx-text-fill: " + Palette.bar(nav.list().getColor()) + ";" : "");
+            name.setText(nav.label());
+            long pending = pendingCount(nav);
+            count.setText(String.valueOf(pending));
+            count.setVisible(pending > 0);
+
+            int index = getIndex();
+            List<Nav> items = getListView().getItems();
+            boolean groupStart = index > 0 && items.get(index - 1).kind() != nav.kind();
+            pseudoClassStateChanged(GROUP_START, groupStart);
+
+            if (nav.kind() == Nav.Kind.LIST) {
+                MenuItem subItem = new MenuItem("Nueva sublista");
+                subItem.setOnAction(e -> addSublist(nav.list()));
+                MenuItem renameItem = new MenuItem("Renombrar");
+                renameItem.setOnAction(e -> rename(nav.list()));
+                MenuItem deleteItem = new MenuItem("Eliminar lista");
+                deleteItem.setOnAction(e -> delete(nav.list()));
+                setContextMenu(new ContextMenu(subItem, renameItem, deleteItem));
+            } else {
+                setContextMenu(null);
+            }
+            setGraphic(root);
+        }
+    }
+}

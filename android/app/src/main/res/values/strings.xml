@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Planora</string>
+    <string name="widget_name">Planora · Mes</string>
+    <string name="widget_description">Tu mes con eventos y tareas</string>
+</resources>

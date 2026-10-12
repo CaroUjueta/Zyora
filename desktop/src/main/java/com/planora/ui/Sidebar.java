@@ -5,6 +5,7 @@ import com.planora.model.TaskList;
 import com.planora.service.Planner;
 import com.planora.service.SmartList;
 import com.planora.sync.SyncServer;
+import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -183,6 +184,11 @@ class Sidebar extends VBox {
         private final Label name = new Label();
         private final Label count = new Label();
         private final HBox root = new HBox(8, arrow, icon, name, count);
+        private final ContextMenu menu = new ContextMenu(
+                menuItem("Nueva sublista", Sidebar.this::addSublist),
+                menuItem("Renombrar", Sidebar.this::rename),
+                menuItem("Cambiar color", Sidebar.this::recolor),
+                menuItem("Eliminar lista", Sidebar.this::delete));
 
         NavCell() {
             arrow.getStyleClass().add("nav-arrow-toggle");
@@ -228,20 +234,21 @@ class Sidebar extends VBox {
             boolean groupStart = index > 0 && items.get(index - 1).kind() != nav.kind();
             pseudoClassStateChanged(GROUP_START, groupStart);
 
-            if (nav.kind() == Nav.Kind.LIST) {
-                MenuItem subItem = new MenuItem("Nueva sublista");
-                subItem.setOnAction(e -> addSublist(nav.list()));
-                MenuItem renameItem = new MenuItem("Renombrar");
-                renameItem.setOnAction(e -> rename(nav.list()));
-                MenuItem colorItem = new MenuItem("Cambiar color");
-                colorItem.setOnAction(e -> recolor(nav.list()));
-                MenuItem deleteItem = new MenuItem("Eliminar lista");
-                deleteItem.setOnAction(e -> delete(nav.list()));
-                setContextMenu(new ContextMenu(subItem, renameItem, colorItem, deleteItem));
-            } else {
-                setContextMenu(null);
-            }
+            setContextMenu(isList ? menu : null);
             setGraphic(root);
+        }
+
+        /**
+         * JavaFX runs a menu item's action before it closes the menu, so a dialog opened right
+         * away would leave the menu stuck on screen while the sidebar redraws underneath it.
+         */
+        private MenuItem menuItem(String text, Consumer<TaskList> action) {
+            MenuItem item = new MenuItem(text);
+            item.setOnAction(e -> {
+                TaskList list = getItem().list();
+                Platform.runLater(() -> action.accept(list));
+            });
+            return item;
         }
     }
 }

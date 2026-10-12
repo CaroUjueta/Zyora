@@ -30,14 +30,14 @@ import java.util.function.Predicate;
  */
 public class Planner {
     /**
-     * Pastel colors for lists and events, shown in pickers as two rows of eight. Views only keep
-     * the hue (see Palette), so every color has a hue of its own. First row: lavender, pink, mint,
-     * peach, sky, butter, coral, aqua. Second row: jade, pistachio, lime, sage, periwinkle,
-     * orchid, mauve and pearl grey.
+     * Pastel colors for lists and events, shown in pickers as two rows of eight. Views paint with
+     * {@link Shades}, which keeps each color's hue and how muted it is. First row: lavender, pink,
+     * mint, peach, sky, butter, coral, aqua. Second row, softer: sand, pistachio, sage, misty blue,
+     * periwinkle, lilac, mauve and pearl grey.
      */
     public static final List<String> COLORS = List.of(
             "#a78bdb", "#f19cbb", "#7cc7a3", "#f5b087", "#82b4e8", "#e8c55c", "#ee8f8f", "#6fc3c9",
-            "#82e0cc", "#c8e082", "#9ae082", "#82e092", "#8285e0", "#d082e0", "#e082cd", "#b9b4c2");
+            "#d0ba9c", "#b0c985", "#a9c7ae", "#aac0d9", "#acb9fb", "#d9aae4", "#d7b2c2", "#bdbdc5");
 
     private static final Comparator<Task> TASK_ORDER = Comparator
             .comparing(Task::isCompleted)

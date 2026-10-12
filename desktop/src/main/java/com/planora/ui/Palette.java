@@ -1,14 +1,12 @@
 package com.planora.ui;
 
-import javafx.scene.paint.Color;
+import com.planora.service.Shades;
 
 /**
- * Derives the soft shades the views paint with from a stored list or event color. Only the hue is
- * kept, so older saturated colors fit the pastel theme too.
+ * The soft tones the views paint with, derived from a stored list or event color by
+ * {@link Shades} (shared with the phone app).
  */
 final class Palette {
-    private static final Color FALLBACK = Color.web("#a78bdb");
-
     private Palette() {
     }
 
@@ -19,41 +17,21 @@ final class Palette {
 
     /** A very light tint for backgrounds. */
     static String fill(String color) {
-        return shade(color, 0.20, 0.98);
+        return Shades.fill(color);
     }
 
     /** Between {@link #fill} and {@link #bar}, for the list banners. */
     static String banner(String color) {
-        return shade(color, 0.28, 0.96);
+        return Shades.banner(color);
     }
 
     /** The pastel tone itself, for bars, dots and accents. */
     static String bar(String color) {
-        return shade(color, 0.42, 0.88);
+        return Shades.bar(color);
     }
 
     /** A dark tone of the same hue, readable on top of {@link #fill}. */
     static String ink(String color) {
-        return shade(color, 0.55, 0.38);
-    }
-
-    static String hex(Color c) {
-        return String.format("#%02x%02x%02x",
-                Math.round(c.getRed() * 255), Math.round(c.getGreen() * 255), Math.round(c.getBlue() * 255));
-    }
-
-    private static String shade(String color, double saturation, double brightness) {
-        Color c = parse(color);
-        // Greys stay grey instead of picking up the hue of red.
-        double s = c.getSaturation() < 0.08 ? 0 : saturation;
-        return hex(Color.hsb(c.getHue(), s, brightness));
-    }
-
-    private static Color parse(String color) {
-        try {
-            return color == null ? FALLBACK : Color.web(color);
-        } catch (IllegalArgumentException e) {
-            return FALLBACK;
-        }
+        return Shades.ink(color);
     }
 }

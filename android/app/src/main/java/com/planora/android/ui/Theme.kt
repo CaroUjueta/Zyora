@@ -5,6 +5,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import android.graphics.Color as AndroidColor
+import com.planora.service.Shades
 
 /** The same pastel palette as the desktop app (planora.css). */
 object Pastel {
@@ -26,19 +27,11 @@ object Pastel {
     val Sky = Color(0xFFCFE2F7)
     val Mint = Color(0xFFC8EBD9)
 
-    // Shades derived from a stored list/event color, keeping only its hue (see Palette.java).
-    fun fill(hex: String?) = shade(hex, 0.20f, 0.98f)
-    fun banner(hex: String?) = shade(hex, 0.28f, 0.96f)
-    fun bar(hex: String?) = shade(hex, 0.42f, 0.88f)
-    fun ink(hex: String?) = shade(hex, 0.55f, 0.38f)
-
-    private fun shade(hex: String?, saturation: Float, value: Float): Color {
-        val argb = runCatching { AndroidColor.parseColor(hex) }.getOrDefault(0xFFA78BDB.toInt())
-        val hsv = FloatArray(3)
-        AndroidColor.colorToHSV(argb, hsv)
-        val s = if (hsv[1] < 0.08f) 0f else saturation
-        return Color(AndroidColor.HSVToColor(floatArrayOf(hsv[0], s, value)))
-    }
+    // Tones derived from a stored list/event color, the same as on the computer (see Shades.java).
+    fun fill(hex: String?) = Color(AndroidColor.parseColor(Shades.fill(hex)))
+    fun banner(hex: String?) = Color(AndroidColor.parseColor(Shades.banner(hex)))
+    fun bar(hex: String?) = Color(AndroidColor.parseColor(Shades.bar(hex)))
+    fun ink(hex: String?) = Color(AndroidColor.parseColor(Shades.ink(hex)))
 }
 
 @Composable

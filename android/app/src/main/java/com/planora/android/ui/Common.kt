@@ -37,7 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.annotation.DrawableRes
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import com.planora.android.R
 import com.planora.service.Planner
+import com.planora.service.SmartList
 
 /**
  * Tasks, lists and events are plain Java objects edited in place, so Compose cannot see when they
@@ -51,13 +56,13 @@ fun observePlanner(): Int = LocalPlannerVersion.current
 
 /** Round checkbox, like Microsoft To Do and Things. */
 @Composable
-fun RoundCheck(checked: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier, size: Int = 22) {
+fun RoundCheck(checked: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier, size: Int = 22, ring: Color = Pastel.Faint) {
     Box(
         modifier
             .size(size.dp)
             .clip(CircleShape)
             .background(if (checked) Pastel.Accent else Color.White)
-            .border(1.5.dp, if (checked) Pastel.Accent else Pastel.Faint, CircleShape)
+            .border(1.5.dp, if (checked) Pastel.Accent else ring, CircleShape)
             .clickable(onClick = onToggle),
         contentAlignment = Alignment.Center,
     ) {
@@ -78,6 +83,20 @@ fun Banner(title: String, subtitle: String, from: Color, to: Color) {
         Spacer(Modifier.height(2.dp))
         Text(subtitle, fontSize = 14.sp, color = Pastel.Text.copy(alpha = 0.75f))
     }
+}
+
+/** One of the line icons in res/drawable-nodpi (ic_nav_*), shared with the desktop sidebar. */
+@Composable
+fun NavIcon(@DrawableRes res: Int, tint: Color = Pastel.Icon, size: Int = 24) {
+    Icon(painterResource(res), contentDescription = null, tint = tint, modifier = Modifier.size(size.dp))
+}
+
+@DrawableRes
+fun SmartList.iconRes(): Int = when (this) {
+    SmartList.MY_DAY -> R.drawable.ic_nav_my_day
+    SmartList.IMPORTANT -> R.drawable.ic_nav_important
+    SmartList.PLANNED -> R.drawable.ic_nav_planned
+    SmartList.ALL -> R.drawable.ic_nav_all_tasks
 }
 
 @Composable

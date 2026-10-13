@@ -26,6 +26,9 @@ object Pastel {
     val Pink = Color(0xFFF6C9D9)
     val Sky = Color(0xFFCFE2F7)
     val Mint = Color(0xFFC8EBD9)
+    /** The ink of the line icons (ic_nav_*). */
+    val Icon = Color(0xFF2827A3)
+    val Lilac = Color(0xFFDDD0F5)
 
     // Tones derived from a stored list/event color, the same as on the computer (see Shades.java).
     fun fill(hex: String?) = Color(AndroidColor.parseColor(Shades.fill(hex)))

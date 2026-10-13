@@ -169,6 +169,40 @@ public class Planner {
         return sortedTasks(t -> !t.isCompleted() && !t.isScheduled());
     }
 
+    /**
+     * The day a task belongs to on the home page: its time block, its due date, or today if it was
+     * added to Mi día. Null for tasks without any date.
+     */
+    public LocalDate planDay(Task task) {
+        if (task.isScheduled()) {
+            return task.getScheduledStart().toLocalDate();
+        }
+        if (task.getDueDate() != null) {
+            return task.getDueDate();
+        }
+        return task.isInMyDay(today()) ? today() : null;
+    }
+
+    /**
+     * The home page's tasks: pending ones up to {@code daysAhead} days from today (overdue ones
+     * too), then the ones finished today, each group by {@link #planDay}.
+     */
+    public List<Task> upcomingTasks(int daysAhead) {
+        LocalDate today = today();
+        LocalDate limit = today.plusDays(daysAhead);
+        return data.getTasks().stream()
+                .filter(t -> {
+                    LocalDate day = planDay(t);
+                    if (day == null || day.isAfter(limit)) {
+                        return false;
+                    }
+                    return !t.isCompleted()
+                            || (t.getCompletedAt() != null && t.getCompletedAt().toLocalDate().equals(today));
+                })
+                .sorted(Comparator.comparing(Task::isCompleted).thenComparing(this::planDay))
+                .toList();
+    }
+
     /** Events and tasks that fall on the given day, all-day items first. */
     public List<AgendaItem> agendaFor(LocalDate day) {
         LocalDateTime dayStart = day.atStartOfDay();

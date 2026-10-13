@@ -11,7 +11,8 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
   en un día se abre en el calendario) y **Mis tareas**: lo pendiente para los próximos 7 días
   (también lo vencido) y lo completado hoy, con etiquetas «Hoy», «Mañana» o la fecha.
 - La primera vez Zyora pregunta tu nombre para el saludo; haz clic en el saludo para cambiarlo.
-  Se guarda solo en este PC, en `~/.planora/profile.properties`.
+  Se guarda en cada aparato por separado (en el PC, en `~/.planora/profile.properties`).
+- En el teléfono, Inicio es la primera pestaña, con lo mismo que en el PC.
 
 **Tareas**
 - Listas propias con color (crear; renombrar, cambiar el color o eliminar con clic derecho, o

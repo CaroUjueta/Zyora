@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.planora.android.PlanoraApplication
+import com.planora.android.R
 import com.planora.android.sync.PhoneSync
 import com.planora.android.sync.SyncState
 import java.time.LocalDate
@@ -50,7 +51,7 @@ fun SyncRow() {
             .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text("⇅", color = Pastel.Accent, fontSize = 16.sp)
+        NavIcon(R.drawable.ic_nav_sync, size = 22)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text("Sincronizar con el PC", color = Pastel.Text, fontSize = 15.sp)

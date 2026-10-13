@@ -28,6 +28,10 @@ class PlanoraApplication : Application() {
 
     private val scope = MainScope()
 
+    /** The user's name for the greeting on Inicio. */
+    lateinit var profile: Profile
+        private set
+
     /** Sync with the computer over Wi‑Fi. */
     lateinit var sync: PhoneSync
         private set
@@ -41,5 +45,6 @@ class PlanoraApplication : Application() {
             scope.launch { MonthWidget().updateAll(this@PlanoraApplication) }
         }
         sync = PhoneSync(this, planner, scope)
+        profile = Profile(this)
     }
 }

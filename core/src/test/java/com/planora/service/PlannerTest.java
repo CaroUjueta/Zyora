@@ -46,6 +46,23 @@ class PlannerTest {
     }
 
     @Test
+    void upcomingTasksCoverTheNextDaysOverdueAndFinishedToday() {
+        Task overdue = planner.addTask("Vencida", planner.defaultList(), t -> t.setDueDate(TODAY.minusDays(3)));
+        Task myDay = planner.addTask("Hoy", planner.defaultList(), t -> t.setMyDay(TODAY));
+        Task tomorrow = planner.addTask("Mañana", planner.defaultList());
+        planner.scheduleTask(tomorrow, TODAY.plusDays(1).atTime(9, 0));
+        Task tooFar = planner.addTask("Lejos", planner.defaultList(), t -> t.setDueDate(TODAY.plusDays(8)));
+        Task undated = planner.addTask("Sin fecha", planner.defaultList());
+        Task done = planner.addTask("Hecha", planner.defaultList(), t -> t.setMyDay(TODAY));
+        planner.setCompleted(done, true);
+
+        assertEquals(List.of(overdue, myDay, tomorrow, done), planner.upcomingTasks(7));
+        assertEquals(TODAY.plusDays(1), planner.planDay(tomorrow));
+        assertEquals(null, planner.planDay(undated));
+        assertFalse(planner.upcomingTasks(7).contains(tooFar));
+    }
+
+    @Test
     void myDayHoldsTasksAddedTodayAndTasksScheduledToday() {
         Task added = planner.addTask("Llamar", planner.defaultList(), t -> t.setMyDay(TODAY));
         Task addedYesterday = planner.addTask("Viejo", planner.defaultList(), t -> t.setMyDay(TODAY.minusDays(1)));

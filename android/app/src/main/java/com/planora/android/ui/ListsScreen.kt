@@ -1,5 +1,6 @@
 package com.planora.android.ui
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -69,7 +70,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
                 modifier = Modifier.padding(start = 8.dp, top = 12.dp, bottom = 12.dp))
         }
         items(listOf(SmartList.IMPORTANT, SmartList.PLANNED, SmartList.ALL)) { smart ->
-            NavRow(icon = smart.icon(), iconColor = Pastel.Accent, name = smart.label(),
+            NavRow(iconRes = smart.iconRes(), name = smart.label(),
                 count = planner.tasksFor(smart).count { !it.isCompleted }, onClick = { onOpen(ListDest.Smart(smart)) })
         }
         item { HorizontalDivider(color = Pastel.Line, modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) }
@@ -79,8 +80,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
             val hasChildren = planner.childrenOf(list).isNotEmpty()
             Box {
                 NavRow(
-                    icon = "●",
-                    iconColor = Pastel.bar(list.color),
+                    dotColor = Pastel.bar(list.color),
                     name = list.name,
                     count = planner.tasksInList(list).count { !it.isCompleted },
                     indent = depth,
@@ -153,8 +153,6 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NavRow(
-    icon: String,
-    iconColor: Color,
     name: String,
     count: Int,
     onClick: () -> Unit,
@@ -162,6 +160,9 @@ private fun NavRow(
     arrow: String? = null,
     onArrow: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
+    /** A line icon for the smart lists, or a dot in the list's color for the user's lists. */
+    @DrawableRes iconRes: Int? = null,
+    dotColor: Color = Pastel.Accent,
 ) {
     Row(
         Modifier
@@ -173,7 +174,9 @@ private fun NavRow(
     ) {
         Text(arrow ?: "", color = Pastel.Muted, fontSize = 12.sp,
             modifier = Modifier.width(18.dp).clickable(enabled = arrow != null, onClick = onArrow))
-        Text(icon, color = iconColor, fontSize = 15.sp)
+        Box(Modifier.width(26.dp), contentAlignment = Alignment.Center) {
+            if (iconRes != null) NavIcon(iconRes) else Dot(dotColor)
+        }
         Spacer(Modifier.width(12.dp))
         Text(name, color = Pastel.Text, fontSize = 15.sp, modifier = Modifier.weight(1f))
         if (count > 0) {

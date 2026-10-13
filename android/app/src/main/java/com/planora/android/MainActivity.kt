@@ -29,8 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.unit.sp
+import androidx.annotation.DrawableRes
 import com.planora.android.ui.CalendarScreen
+import com.planora.android.ui.HomeScreen
+import com.planora.android.ui.NameDialog
+import com.planora.android.ui.NavIcon
 import com.planora.android.ui.Fmt
 import com.planora.android.ui.ListDest
 import com.planora.android.ui.ListsScreen
@@ -61,7 +64,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val version by app.version.collectAsState()
             CompositionLocalProvider(LocalPlannerVersion provides version) {
-                PlanoraTheme { PlanoraRoot(app.planner, openDay) }
+                PlanoraTheme { PlanoraRoot(app.planner, app.profile, openDay) }
             }
         }
     }
@@ -95,15 +98,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Tab(val label: String, val icon: String) {
-    MY_DAY("Mi día", "☀"),
-    LISTS("Listas", "≡"),
-    CALENDAR("Calendario", "▦"),
+private enum class Tab(val label: String, @DrawableRes val icon: Int) {
+    HOME("Inicio", R.drawable.ic_nav_home),
+    MY_DAY("Mi día", R.drawable.ic_nav_my_day),
+    LISTS("Listas", R.drawable.ic_nav_lists),
+    CALENDAR("Calendario", R.drawable.ic_nav_calendar),
 }
 
 @Composable
-private fun PlanoraRoot(planner: Planner, openDay: MutableState<LocalDate?>) {
-    var tab by rememberSaveable { mutableStateOf(Tab.MY_DAY) }
+private fun PlanoraRoot(planner: Planner, profile: Profile, openDay: MutableState<LocalDate?>) {
+    var tab by rememberSaveable { mutableStateOf(Tab.HOME) }
+    // Asked once, on the first run; cancelling leaves it for the next time the app opens.
+    var askName by rememberSaveable { mutableStateOf(!profile.hasName) }
     var listDest by remember { mutableStateOf<ListDest?>(null) }
     var calendarDay by remember { mutableStateOf(planner.today()) }
     var openTask by remember { mutableStateOf<Task?>(null) }
@@ -128,7 +134,7 @@ private fun PlanoraRoot(planner: Planner, openDay: MutableState<LocalDate?>) {
                             if (t == Tab.LISTS && tab == Tab.LISTS) listDest = null
                             tab = t
                         },
-                        icon = { Text(t.icon, fontSize = 18.sp) },
+                        icon = { NavIcon(t.icon, tint = if (tab == t) Pastel.Icon else Pastel.Muted) },
                         label = { Text(t.label) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = Pastel.AccentSoft,
@@ -144,6 +150,10 @@ private fun PlanoraRoot(planner: Planner, openDay: MutableState<LocalDate?>) {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             when (tab) {
+                Tab.HOME -> HomeScreen(planner, profile, onOpenDay = {
+                    calendarDay = it
+                    tab = Tab.CALENDAR
+                }) { openTask = it }
                 Tab.MY_DAY -> SmartListScreen(planner, SmartList.MY_DAY) { openTask = it }
                 Tab.LISTS -> when (val dest = listDest) {
                     null -> ListsScreen(planner) { listDest = it }
@@ -156,6 +166,10 @@ private fun PlanoraRoot(planner: Planner, openDay: MutableState<LocalDate?>) {
     }
 
     openTask?.let { TaskSheet(planner, it) { openTask = null } }
+    if (askName) {
+        NameDialog("Te damos la bienvenida a Zyora. ¿Cómo te llamas?", "", "Guardar",
+            onConfirm = { profile.rename(it); askName = false }, onDismiss = { askName = false })
+    }
 }
 
 @Composable

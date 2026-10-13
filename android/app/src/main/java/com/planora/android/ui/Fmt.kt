@@ -10,6 +10,7 @@ object Fmt {
     val TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val LONG_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", ES)
     val SHORT_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE d MMM", ES)
+    val DAY_MONTH: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", ES)
     val MONTH_YEAR: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", ES)
 
     fun capitalize(s: String) = s.replaceFirstChar { it.titlecase(ES) }

@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -191,37 +190,8 @@ class HomePane extends VBox {
         return card;
     }
 
-    /**
-     * The day a task belongs to on the home page: its time block, its due date, or today if it was
-     * added to Mi día. Null for tasks without any date.
-     */
-    private LocalDate dayOf(Task task, LocalDate today) {
-        if (task.isScheduled()) {
-            return task.getScheduledStart().toLocalDate();
-        }
-        if (task.getDueDate() != null) {
-            return task.getDueDate();
-        }
-        return task.isInMyDay(today) ? today : null;
-    }
-
-    /** Pending tasks up to a week ahead (overdue ones too), plus the ones finished today. */
     private void fillTasks() {
-        LocalDate today = planner.today();
-        LocalDate limit = today.plusDays(DAYS_AHEAD);
-        List<Task> tasks = planner.tasks().stream()
-                .filter(t -> {
-                    LocalDate day = dayOf(t, today);
-                    if (day == null || day.isAfter(limit)) {
-                        return false;
-                    }
-                    return !t.isCompleted()
-                            || (t.getCompletedAt() != null && t.getCompletedAt().toLocalDate().equals(today));
-                })
-                .sorted(Comparator.comparing(Task::isCompleted)
-                        .thenComparing(t -> dayOf(t, today)))
-                .toList();
-
+        List<Task> tasks = planner.upcomingTasks(DAYS_AHEAD);
         taskRows.getChildren().clear();
         if (tasks.isEmpty()) {
             Label none = new Label("Nada pendiente para esta semana.");
@@ -229,6 +199,7 @@ class HomePane extends VBox {
             taskRows.getChildren().add(none);
             return;
         }
+        LocalDate today = planner.today();
         tasks.forEach(t -> taskRows.getChildren().add(taskRow(t, today)));
     }
 
@@ -250,7 +221,7 @@ class HomePane extends VBox {
         row.setAlignment(Pos.CENTER_LEFT);
         row.getStyleClass().add("home-task-row");
         if (!task.isCompleted()) {
-            row.getChildren().add(badge(dayOf(task, today), today));
+            row.getChildren().add(badge(planner.planDay(task), today));
         }
         row.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY && !check.isHover()) {

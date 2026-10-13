@@ -65,7 +65,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
 
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(12.dp)) {
         item {
-            Text("Planora", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Pastel.AccentInk,
+            Text("Zyora", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Pastel.AccentInk,
                 modifier = Modifier.padding(start = 8.dp, top = 12.dp, bottom = 12.dp))
         }
         items(listOf(SmartList.IMPORTANT, SmartList.PLANNED, SmartList.ALL)) { smart ->

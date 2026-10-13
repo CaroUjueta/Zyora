@@ -86,7 +86,7 @@ class TaskListPane extends BorderPane {
     }
 
     private void refresh() {
-        if (nav == null || nav.kind() == Nav.Kind.CALENDAR) {
+        if (nav == null || nav.kind() == Nav.Kind.HOME || nav.kind() == Nav.Kind.CALENDAR) {
             return;
         }
         List<Task> tasks = nav.kind() == Nav.Kind.SMART

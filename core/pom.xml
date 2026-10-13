@@ -11,8 +11,8 @@
     </parent>
 
     <artifactId>planora-core</artifactId>
-    <name>Planora core</name>
-    <description>Modelo, reglas y almacenamiento de Planora, sin interfaz gráfica.</description>
+    <name>Zyora core</name>
+    <description>Modelo, reglas y almacenamiento de Zyora, sin interfaz gráfica.</description>
 
     <properties>
         <!-- Java 17 so the same library runs on Android. -->

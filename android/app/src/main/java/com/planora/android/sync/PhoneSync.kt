@@ -30,7 +30,7 @@ sealed interface SyncState {
 }
 
 /**
- * Syncs with Planora on the computer over Wi‑Fi (see [SyncProtocol]): sends everything, gets back
+ * Syncs with Zyora on the computer over Wi‑Fi (see [SyncProtocol]): sends everything, gets back
  * the merge of both sides and merges that once more with whatever changed here meanwhile.
  * The planner is only touched on the main thread; the network part runs on IO.
  */
@@ -115,7 +115,7 @@ class PhoneSync(context: Context, private val planner: Planner, private val scop
     private fun explain(error: Throwable, host: String): String = when (error) {
         is PcRefused -> error.message.orEmpty()
         is ConnectException, is SocketTimeoutException, is NoRouteToHostException, is UnknownHostException ->
-            "No se encontró el PC en $host. Revisa que Planora esté abierta en el PC y que los dos estén en la misma Wi‑Fi."
+            "No se encontró el PC en $host. Revisa que Zyora esté abierta en el PC y que los dos estén en la misma Wi‑Fi."
         else -> "No se pudo sincronizar: ${error.message ?: error.javaClass.simpleName}"
     }
 

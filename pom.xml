@@ -8,7 +8,7 @@
     <artifactId>planora-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Planora</name>
+    <name>Zyora</name>
     <description>Tareas y calendario en una sola app de escritorio.</description>
 
     <modules>

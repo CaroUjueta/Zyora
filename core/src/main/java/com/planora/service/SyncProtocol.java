@@ -1,7 +1,7 @@
 package com.planora.service;
 
 /**
- * How the phone and the computer talk over Wi‑Fi. While Planora is open on the computer it listens
+ * How the phone and the computer talk over Wi‑Fi. While Zyora is open on the computer it listens
  * on {@link #PORT}. The phone sends {@code POST /sync} with the pairing code in {@link #CODE_HEADER}
  * and all its data as the body; the computer merges both sides, keeps the result and answers with
  * it, so after one request both devices hold the same data.

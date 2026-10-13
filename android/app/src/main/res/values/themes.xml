@@ -4,5 +4,6 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
     <color name="surface">#FFFFFDFB</color>
-    <color name="icon_background">#FFF3EEFB</color>
+    <!-- Matches the tile of the launcher icon (drawable-nodpi/ic_launcher_foreground.png). -->
+    <color name="icon_background">#FFEDEFFC</color>
 </resources>

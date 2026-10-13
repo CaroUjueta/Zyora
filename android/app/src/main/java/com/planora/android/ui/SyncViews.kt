@@ -55,7 +55,7 @@ fun SyncRow() {
         Column(Modifier.weight(1f)) {
             Text("Sincronizar con el PC", color = Pastel.Text, fontSize = 15.sp)
             Text(
-                if (!sync.isConfigured) "Toca para conectar con Planora en tu computador" else describe(state),
+                if (!sync.isConfigured) "Toca para conectar con Zyora en tu computador" else describe(state),
                 color = if (state is SyncState.Failed) Pastel.Danger else Pastel.Muted,
                 fontSize = 12.sp,
                 maxLines = 2,
@@ -77,7 +77,7 @@ private fun SyncDialog(sync: PhoneSync, state: SyncState, onDismiss: () -> Unit)
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    "En el PC abre Planora y pulsa «Sincronizar con el teléfono». Escribe aquí la dirección y el código que aparecen. " +
+                    "En el PC abre Zyora y pulsa «Sincronizar con el teléfono». Escribe aquí la dirección y el código que aparecen. " +
                         "Los dos deben estar en la misma red Wi‑Fi.",
                     color = Pastel.Muted, fontSize = 14.sp,
                 )

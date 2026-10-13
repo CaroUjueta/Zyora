@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Lets the phone sync over Wi‑Fi while Planora is open (see {@link SyncProtocol}). Only requests
+ * Lets the phone sync over Wi‑Fi while Zyora is open (see {@link SyncProtocol}). Only requests
  * that carry the pairing code are accepted; the code is kept in {@code sync.properties} next to the
  * data file so the phone does not need it again.
  */
@@ -79,7 +79,7 @@ public class SyncServer {
         } catch (IOException e) {
             server = null;
             error = "No se pudo abrir el puerto " + SyncProtocol.PORT
-                    + ". ¿Hay otra ventana de Planora abierta?";
+                    + ". ¿Hay otra ventana de Zyora abierta?";
         }
     }
 
@@ -233,7 +233,7 @@ public class SyncServer {
             props.setProperty("code", fresh);
             Files.createDirectories(settingsFile.getParent());
             try (OutputStream out = Files.newOutputStream(settingsFile)) {
-                props.store(out, "Planora: código para sincronizar con el teléfono");
+                props.store(out, "Zyora: código para sincronizar con el teléfono");
             }
             return fresh;
         } catch (IOException e) {

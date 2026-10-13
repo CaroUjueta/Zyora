@@ -39,7 +39,7 @@ class Sidebar extends VBox {
         this.planner = planner;
         getStyleClass().add("sidebar");
 
-        Label brand = new Label("✿ Planora");
+        Label brand = new Label("✿ Zyora");
         brand.getStyleClass().add("brand");
 
         navList.getStyleClass().add("nav-list");
@@ -63,7 +63,8 @@ class Sidebar extends VBox {
             }
         });
 
-        Button syncButton = new Button("⇅  Sincronizar con el teléfono");
+        Button syncButton = new Button("Sincronizar con el teléfono", Icons.view("sync", 20));
+        syncButton.setGraphicTextGap(10);
         syncButton.getStyleClass().add("sync-button");
         syncButton.setMaxWidth(Double.MAX_VALUE);
         syncButton.setOnAction(e -> SyncDialog.show(getScene().getWindow(), sync));
@@ -86,6 +87,7 @@ class Sidebar extends VBox {
     private void refresh() {
         Nav selected = navList.getSelectionModel().getSelectedItem();
         List<Nav> items = new ArrayList<>();
+        items.add(Nav.home());
         items.add(Nav.calendar());
         for (SmartList smart : SmartList.values()) {
             items.add(Nav.smart(smart));
@@ -105,13 +107,17 @@ class Sidebar extends VBox {
         }
         refreshing = false;
         if (!keep) {
-            navList.getSelectionModel().select(Nav.smart(SmartList.MY_DAY));
+            navList.getSelectionModel().select(Nav.home());
         }
+    }
+
+    void select(Nav nav) {
+        navList.getSelectionModel().select(nav);
     }
 
     private long pendingCount(Nav nav) {
         List<Task> tasks = switch (nav.kind()) {
-            case CALENDAR -> List.of();
+            case HOME, CALENDAR -> List.of();
             case SMART -> planner.tasksFor(nav.smart());
             case LIST -> planner.tasksInList(nav.list());
         };
@@ -222,8 +228,15 @@ class Sidebar extends VBox {
             arrow.setVisible(isList);
             arrow.setManaged(isList);
             root.setPadding(new Insets(0, 0, 0, isList ? depth(nav.list()) * 16 : 0));
-            icon.setText(nav.icon());
-            icon.setStyle(nav.kind() == Nav.Kind.LIST ? "-fx-text-fill: " + Palette.bar(nav.list().getColor()) + ";" : "");
+            if (isList) {
+                icon.setGraphic(null);
+                icon.setText("●");
+                icon.setStyle("-fx-text-fill: " + Palette.bar(nav.list().getColor()) + ";");
+            } else {
+                icon.setGraphic(Icons.view(nav.iconName(), 24));
+                icon.setText("");
+                icon.setStyle("");
+            }
             name.setText(nav.label());
             long pending = pendingCount(nav);
             count.setText(String.valueOf(pending));
@@ -231,7 +244,7 @@ class Sidebar extends VBox {
 
             int index = getIndex();
             List<Nav> items = getListView().getItems();
-            boolean groupStart = index > 0 && items.get(index - 1).kind() != nav.kind();
+            boolean groupStart = index > 0 && items.get(index - 1).section() != nav.section();
             pseudoClassStateChanged(GROUP_START, groupStart);
 
             setContextMenu(isList ? menu : null);

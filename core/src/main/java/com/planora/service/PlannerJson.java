@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 
-/** How Planora data looks as JSON, the same in the data file and between devices. */
+/** How Zyora data looks as JSON, the same in the data file and between devices. */
 public final class PlannerJson {
     static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())

@@ -1,0 +1,4 @@
+<resources>
+    <!-- Dark tile of the launcher icon, used while the phone is in dark mode. -->
+    <color name="icon_background">#FF1D203E</color>
+</resources>

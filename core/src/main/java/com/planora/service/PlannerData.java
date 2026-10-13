@@ -8,7 +8,7 @@ import com.planora.model.Tombstone;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Everything Planora persists, as one document. */
+/** Everything Zyora persists, as one document. */
 public class PlannerData {
     private List<TaskList> lists = new ArrayList<>();
     private List<Task> tasks = new ArrayList<>();

@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Planora"
+rootProject.name = "Zyora"
 include(":core", ":app")

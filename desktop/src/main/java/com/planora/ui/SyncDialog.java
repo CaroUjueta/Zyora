@@ -38,7 +38,7 @@ final class SyncDialog {
 
         List<String> addresses = SyncServer.localAddresses();
         content.getChildren().add(message(
-                "En el teléfono abre Planora → Listas → «Sincronizar con el PC» y escribe:"));
+                "En el teléfono abre Zyora → Listas → «Sincronizar con el PC» y escribe:"));
 
         GridPane grid = new GridPane();
         grid.getStyleClass().add("sync-grid");
@@ -57,7 +57,7 @@ final class SyncDialog {
         content.getChildren().add(status);
 
         content.getChildren().add(message(
-                "El teléfono y el PC deben estar en la misma red Wi‑Fi y Planora abierta en el PC. "
+                "El teléfono y el PC deben estar en la misma red Wi‑Fi y Zyora abierta en el PC. "
                         + "Después de la primera vez, el teléfono se sincroniza solo al abrir la app."));
 
         dialog.getDialogPane().setContent(content);

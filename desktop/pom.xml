@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>planora</artifactId>
-    <name>Planora desktop</name>
+    <name>Zyora desktop</name>
 
     <properties>
         <app.main>com.planora.PlanoraApp</app.main>

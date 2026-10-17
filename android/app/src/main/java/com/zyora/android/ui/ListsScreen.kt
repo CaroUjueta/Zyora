@@ -110,6 +110,7 @@ fun ListsScreen(planner: Planner, onOpen: (ListDest) -> Unit) {
         item {
             HorizontalDivider(color = Pastel.Line, modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp))
             SyncRow()
+            NotificationRow()
         }
     }
 

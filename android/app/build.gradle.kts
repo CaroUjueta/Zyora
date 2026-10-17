@@ -39,5 +39,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.13.0")
     implementation("androidx.glance:glance-appwidget:1.2.0")
+    implementation("androidx.core:core:1.18.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

@@ -2,6 +2,7 @@ package com.zyora.android
 
 import android.app.Application
 import androidx.glance.appwidget.updateAll
+import com.zyora.android.notify.TodayNotification
 import com.zyora.android.sync.PhoneSync
 import com.zyora.android.widget.MonthWidget
 import com.zyora.service.JsonPlannerStore
@@ -43,8 +44,10 @@ class ZyoraApplication : Application() {
         planner.addListener {
             changes.value++
             scope.launch { MonthWidget().updateAll(this@ZyoraApplication) }
+            TodayNotification.update(this)
         }
         sync = PhoneSync(this, planner, scope)
         profile = Profile(this)
+        TodayNotification.update(this)
     }
 }

@@ -1,14 +1,17 @@
 package com.zyora.android
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
@@ -30,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.annotation.DrawableRes
+import com.zyora.android.notify.TodayNotification
 import com.zyora.android.ui.CalendarScreen
 import com.zyora.android.ui.HomeScreen
 import com.zyora.android.ui.NameDialog
@@ -52,6 +56,10 @@ class MainActivity : ComponentActivity() {
     /** A day the widget asked to open; the calendar tab shows it and clears it. */
     private val openDay = mutableStateOf<LocalDate?>(null)
 
+    private val askNotifications = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        TodayNotification.update(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Light background everywhere, so the status bar needs dark icons.
@@ -61,6 +69,12 @@ class MainActivity : ComponentActivity() {
         )
         openDay.value = dayFrom(intent)
         val app = application as ZyoraApplication
+        // The notification with today's tasks needs permission from Android 13 on.
+        if (savedInstanceState == null && Build.VERSION.SDK_INT >= 33 &&
+            TodayNotification.isEnabled(this) && !TodayNotification.hasPermission(this)
+        ) {
+            askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
         setContent {
             val version by app.version.collectAsState()
             CompositionLocalProvider(LocalPlannerVersion provides version) {
@@ -72,6 +86,8 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         (application as ZyoraApplication).sync.syncNow()
+        // The day may have changed, or the permission been given in the settings.
+        TodayNotification.update(this)
     }
 
     override fun onStop() {

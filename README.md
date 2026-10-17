@@ -91,6 +91,12 @@ Gradle `android/core` compila directamente los archivos de `core/`.
 - O desde la terminal: `cd android && ./gradlew :app:installDebug` (con un teléfono o emulador conectado).
 - Widget: mantén presionada la pantalla de inicio → Widgets → Zyora · Mes. Las flechas cambian
   de mes y al tocar un día se abre la app en ese día.
+- **Notificación de tareas de hoy**: queda fija en la barra de notificaciones mientras tengas
+  tareas pendientes para hoy (también las vencidas, y con la hora si tienen bloque en el
+  calendario). Se actualiza sola con cada cambio, a medianoche y al reiniciar el teléfono, y si la
+  deslizas para quitarla vuelve a aparecer. Desaparece al completar las tareas del día; para
+  apagarla: **Listas → Notificación de tareas de hoy**. La primera vez Android pide permiso para
+  mostrar notificaciones.
 
 ## Sincronizar el teléfono y el PC
 

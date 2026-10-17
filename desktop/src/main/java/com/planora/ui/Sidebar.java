@@ -35,7 +35,7 @@ class Sidebar extends VBox {
     private final Set<String> collapsed = new HashSet<>();
     private boolean refreshing;
 
-    Sidebar(Planner planner, SyncServer sync, Consumer<Nav> onNavigate) {
+    Sidebar(Planner planner, SyncServer sync, DesktopWidget widget, Consumer<Nav> onNavigate) {
         this.planner = planner;
         getStyleClass().add("sidebar");
 
@@ -79,7 +79,15 @@ class Sidebar extends VBox {
             syncStatus.setVisible(true);
         });
 
-        getChildren().addAll(brand, navList, newList, syncButton, syncStatus);
+        Button widgetButton = new Button("", Icons.view("widget", 20));
+        widgetButton.textProperty().bind(widget.showingProperty()
+                .map(open -> open ? "Ocultar el widget" : "Widget de escritorio"));
+        widgetButton.setGraphicTextGap(10);
+        widgetButton.getStyleClass().add("sync-button");
+        widgetButton.setMaxWidth(Double.MAX_VALUE);
+        widgetButton.setOnAction(e -> widget.toggle());
+
+        getChildren().addAll(brand, navList, newList, new VBox(6, widgetButton, syncButton, syncStatus));
         planner.addListener(this::refresh);
         refresh();
     }

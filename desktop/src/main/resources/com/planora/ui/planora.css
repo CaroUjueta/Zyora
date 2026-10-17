@@ -500,3 +500,54 @@
 .home-badge.today { -fx-background-color: #fde4ec; -fx-text-fill: #b54d72; }
 .home-badge.tomorrow { -fx-background-color: #dcf3e7; -fx-text-fill: #3f8a63; }
 .home-badge.overdue { -fx-background-color: #fbe8ec; -fx-text-fill: -danger; }
+
+/* ---- Desktop widget ---- */
+
+.root.widget-root { -fx-background-color: transparent; }
+.widget-card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 22;
+    -fx-border-color: -line-strong;
+    -fx-border-radius: 22;
+    -fx-padding: 12 12 10 12;
+    -fx-effect: dropshadow(gaussian, rgba(91, 74, 158, 0.22), 14, 0, 0, 3);
+}
+.widget-month { -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -text; -fx-padding: 0 0 0 6; -fx-cursor: hand; }
+.widget-month:hover { -fx-text-fill: -accent-ink; }
+.widget-button {
+    -fx-background-color: -chip;
+    -fx-text-fill: -accent-ink;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 3 10;
+    -fx-min-height: 26;
+}
+.widget-close { -fx-background-color: transparent; -fx-text-fill: -muted; -fx-font-size: 15px; -fx-padding: 1 8; }
+.widget-close:hover { -fx-background-color: #fbe8ec; -fx-text-fill: -danger; }
+.widget-weekday { -fx-alignment: center; -fx-text-fill: -muted; -fx-font-size: 11px; -fx-font-weight: bold; }
+.widget-grid { -fx-hgap: 2; -fx-vgap: 2; }
+.widget-cell { -fx-background-radius: 9; -fx-padding: 2 2 0 2; -fx-cursor: hand; }
+.widget-cell:hover { -fx-background-color: -chip; }
+.widget-cell.today { -fx-background-color: -accent-soft; }
+.widget-day {
+    -fx-min-width: 22; -fx-min-height: 22; -fx-pref-width: 22; -fx-pref-height: 22;
+    -fx-alignment: center;
+    -fx-background-radius: 999;
+    -fx-font-size: 11.5px;
+    -fx-text-fill: -text;
+}
+.widget-cell.other-month .widget-day { -fx-text-fill: -faint; }
+.widget-cell.today .widget-day { -fx-background-color: -accent; -fx-text-fill: white; -fx-font-weight: bold; }
+.widget-item {
+    -fx-background-color: -item-fill;
+    -fx-background-radius: 4;
+    -fx-border-color: -item-bar;
+    -fx-border-width: 0 0 0 2;
+    -fx-border-radius: 4 0 0 4;
+    -fx-padding: 0 3;
+    -fx-font-size: 9px;
+    -fx-text-fill: -item-ink;
+    -fx-text-overrun: clip;
+}
+.widget-item.completed { -fx-opacity: 0.5; }
+.widget-more { -fx-text-fill: -accent-ink; -fx-font-size: 9px; -fx-font-weight: bold; }

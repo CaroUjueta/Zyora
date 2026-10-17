@@ -15,13 +15,13 @@ public class MainWindow extends BorderPane {
     private final TaskDetailPane detailPane;
     private final Sidebar sidebar;
 
-    public MainWindow(Planner planner, Profile profile, SyncServer sync) {
+    public MainWindow(Planner planner, Profile profile, SyncServer sync, DesktopWidget widget) {
         getStyleClass().add("main-window");
         detailPane = new TaskDetailPane(planner, () -> setRight(null));
         homePane = new HomePane(planner, profile, this::openTask, this::openDay);
         taskPane = new TaskListPane(planner, this::openTask);
         calendarPane = new CalendarPane(planner, this::openTask);
-        sidebar = new Sidebar(planner, sync, this::navigate);
+        sidebar = new Sidebar(planner, sync, widget, this::navigate);
         setLeft(sidebar);
     }
 
@@ -46,7 +46,8 @@ public class MainWindow extends BorderPane {
         setRight(detailPane);
     }
 
-    private void openDay(LocalDate day) {
+    /** Shows that day on the calendar. */
+    public void openDay(LocalDate day) {
         calendarPane.openDay(day);
         sidebar.select(Nav.calendar());
     }

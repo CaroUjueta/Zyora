@@ -34,6 +34,18 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
 - **Mi día** muestra junto a tus tareas la agenda de hoy (eventos + bloques de tareas).
 - Arrastra un bloque a la fila "Todo el día" para quitarle la hora y dejarlo solo con fecha.
 
+**Widget de escritorio (PC)**
+- Pulsa **Widget de escritorio** abajo en la barra lateral: aparece un calendario del mes flotando
+  en el escritorio, igual al widget del teléfono (los eventos y tareas de cada día, «Hoy», ‹ ›).
+- Arrástralo a donde quieras; al hacer clic en un día se abre Zyora en ese día. Clic derecho:
+  abrir Zyora, dejarlo siempre encima de las ventanas, ocultarlo o salir de Zyora.
+- Mientras el widget esté abierto, Zyora sigue funcionando aunque cierres la ventana principal
+  (y el teléfono puede seguir sincronizando). Se recuerda si estaba abierto y dónde, en
+  `~/.planora/widget.properties`.
+- Para que aparezca al encender el PC: crea un acceso directo a `Zyora.exe --widget` (o
+  `javaw -jar ...-all.jar --widget`) en la carpeta que abre `Win + R` → `shell:startup`. Con
+  `--widget` arranca solo el widget, sin la ventana principal.
+
 ## Requisitos
 
 - JDK 21 o superior (por ejemplo [Eclipse Temurin](https://adoptium.net/)).
@@ -122,7 +134,8 @@ desktop/     la app de escritorio (JavaFX)
     ├── PlanoraApp.java / Launcher.java   arranque de la app
     ├── sync/      SyncServer: recibe al teléfono por Wi‑Fi
     └── ui/        Inicio, ventana principal, barra lateral, listas de tareas, detalle de tarea,
-                   calendario (MonthView, TimeGridView, DayColumn) y ventanas flotantes
+                   calendario (MonthView, TimeGridView, DayColumn), ventanas flotantes y
+                   DesktopWidget (el widget de escritorio)
 desktop/src/main/resources/com/planora/
     ├── icons/     ícono de la ventana (planora-*.png) y nav/: íconos de la barra lateral
     └── ui/        planora.css

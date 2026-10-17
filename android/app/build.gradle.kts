@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.planora.android"
+    namespace = "com.zyora.android"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.planora.android"
+        applicationId = "com.zyora.android"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

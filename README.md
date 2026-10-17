@@ -11,7 +11,7 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
   en un día se abre en el calendario) y **Mis tareas**: lo pendiente para los próximos 7 días
   (también lo vencido) y lo completado hoy, con etiquetas «Hoy», «Mañana» o la fecha.
 - La primera vez Zyora pregunta tu nombre para el saludo; haz clic en el saludo para cambiarlo.
-  Se guarda en cada aparato por separado (en el PC, en `~/.planora/profile.properties`).
+  Se guarda en cada aparato por separado (en el PC, en `~/.zyora/profile.properties`).
 - En el teléfono, Inicio es la primera pestaña, con lo mismo que en el PC.
 
 **Tareas**
@@ -41,7 +41,7 @@ tu agenda, sino que puedes **arrastrarlas al calendario para reservarles tiempo*
   abrir Zyora, dejarlo siempre encima de las ventanas, ocultarlo o salir de Zyora.
 - Mientras el widget esté abierto, Zyora sigue funcionando aunque cierres la ventana principal
   (y el teléfono puede seguir sincronizando). Se recuerda si estaba abierto y dónde, en
-  `~/.planora/widget.properties`.
+  `~/.zyora/widget.properties`.
 - Para que aparezca al encender el PC: crea un acceso directo a `Zyora.exe --widget` (o
   `javaw -jar ...-all.jar --widget`) en la carpeta que abre `Win + R` → `shell:startup`. Con
   `--widget` arranca solo el widget, sin la ventana principal.
@@ -65,7 +65,7 @@ Crear un `.jar` ejecutable (funciona en el sistema operativo donde se compila):
 
 ```bash
 ./mvnw package
-java -jar desktop/target/planora-0.1.0-SNAPSHOT-all.jar
+java -jar desktop/target/zyora-0.1.0-SNAPSHOT-all.jar
 ```
 
 Pruebas: `./mvnw test`
@@ -74,9 +74,9 @@ Crear `Zyora.exe` para Windows (en Windows, con un JDK 21 que traiga `jpackage`)
 
 ```bat
 mvnw.cmd package -DskipTests -Djavafx.platform=win
-mkdir jpackage-in & copy desktop\target\planora-0.1.0-SNAPSHOT-all.jar jpackage-in\
-jpackage --type app-image --name Zyora --input jpackage-in --main-jar planora-0.1.0-SNAPSHOT-all.jar ^
-    --main-class com.planora.Launcher --app-version 0.1.0 --icon desktop\packaging\planora.ico --dest out
+mkdir jpackage-in & copy desktop\target\zyora-0.1.0-SNAPSHOT-all.jar jpackage-in\
+jpackage --type app-image --name Zyora --input jpackage-in --main-jar zyora-0.1.0-SNAPSHOT-all.jar ^
+    --main-class com.zyora.Launcher --app-version 0.1.0 --icon desktop\packaging\zyora.ico --dest out
 ```
 
 Queda en `out\Zyora\` (el `.exe` necesita las carpetas `app` y `runtime` que lo acompañan).
@@ -110,36 +110,40 @@ lado se borra en el otro. Las listas con el mismo nombre (como «Tareas») se ju
   puede preguntar si permite el acceso a la red: acepta para **redes privadas**.
 - Ejecuta la app de escritorio en Windows (`java -jar ...-all.jar`), no dentro de WSL: desde WSL
   la dirección que se muestra es interna y el teléfono no llega a ella.
-- El código se guarda en `~/.planora/sync.properties`; bórralo para generar uno nuevo.
+- El código se guarda en `~/.zyora/sync.properties`; bórralo para generar uno nuevo.
 - Usa la hora de cada aparato para decidir qué cambio es más reciente, así que conviene que ambos
   tengan la hora automática.
 
 ## Datos
 
-Todo se guarda automáticamente en `~/.planora/planora.json` (en Windows,
-`C:\Users\<usuario>\.planora\planora.json`). Para usar otro archivo:
-`-Dplanora.data=ruta/al/archivo.json`.
+Todo se guarda automáticamente en `~/.zyora/zyora.json` (en Windows,
+`C:\Users\<usuario>\.zyora\zyora.json`). Para usar otro archivo:
+`-Dzyora.data=ruta/al/archivo.json`.
+
+Antes Zyora se llamaba Planora y guardaba todo en `~/.planora/planora.json`. La primera vez que se
+abre con el nombre nuevo, mueve esa carpeta a `~/.zyora` sola (datos, nombre, código de
+sincronización y widget).
 
 ## Estructura
 
 ```
 core/        modelo y lógica, sin interfaz (Java 17, para poder usarlo también en Android)
-└── src/main/java/com/planora/
+└── src/main/java/com/zyora/
     ├── model/     Task, Step, TaskList, CalendarEvent, Syncable, Tombstone
     └── service/   Planner (lógica y notificación de cambios), JsonPlannerStore (persistencia),
                    ChangeTracker (fecha de última modificación), SyncMerger (mezcla los datos de
                    dos aparatos), SyncProtocol, SmartList, AgendaItem
 desktop/     la app de escritorio (JavaFX)
-└── src/main/java/com/planora/
-    ├── PlanoraApp.java / Launcher.java   arranque de la app
+└── src/main/java/com/zyora/
+    ├── ZyoraApp.java / Launcher.java   arranque de la app
     ├── sync/      SyncServer: recibe al teléfono por Wi‑Fi
     └── ui/        Inicio, ventana principal, barra lateral, listas de tareas, detalle de tarea,
                    calendario (MonthView, TimeGridView, DayColumn), ventanas flotantes y
                    DesktopWidget (el widget de escritorio)
-desktop/src/main/resources/com/planora/
-    ├── icons/     ícono de la ventana (planora-*.png) y nav/: íconos de la barra lateral
-    └── ui/        planora.css
-desktop/packaging/   appPc.png (diseño original) y planora.ico, el ícono del .exe
+desktop/src/main/resources/com/zyora/
+    ├── icons/     ícono de la ventana (zyora-*.png) y nav/: íconos de la barra lateral
+    └── ui/        zyora.css
+desktop/packaging/   appPc.png (diseño original) y zyora.ico, el ícono del .exe
 android/packaging/   appCelLight.png y appCelDark.png, diseños originales del ícono del teléfono
                      (en la app: res/drawable-nodpi y res/drawable-night-nodpi, modo oscuro)
 ```

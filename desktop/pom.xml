@@ -5,23 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.planora</groupId>
-        <artifactId>planora-parent</artifactId>
+        <groupId>com.zyora</groupId>
+        <artifactId>zyora-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>planora</artifactId>
+    <artifactId>zyora</artifactId>
     <name>Zyora desktop</name>
 
     <properties>
-        <app.main>com.planora.PlanoraApp</app.main>
-        <app.launcher>com.planora.Launcher</app.launcher>
+        <app.main>com.zyora.ZyoraApp</app.main>
+        <app.launcher>com.zyora.Launcher</app.launcher>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.planora</groupId>
-            <artifactId>planora-core</artifactId>
+            <groupId>com.zyora</groupId>
+            <artifactId>zyora-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -40,7 +40,7 @@
                     <mainClass>${app.main}</mainClass>
                 </configuration>
             </plugin>
-            <!-- mvnw package -> desktop/target/planora-<version>-all.jar (ejecutable en la plataforma donde se compiló) -->
+            <!-- mvnw package -> desktop/target/zyora-<version>-all.jar (ejecutable en la plataforma donde se compiló) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
